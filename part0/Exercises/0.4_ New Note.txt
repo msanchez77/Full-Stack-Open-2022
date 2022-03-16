@@ -1,0 +1,17 @@
+title New Note
+
+note over Browser: Browser has received HTML, CSS, JS, and JSON from Server
+
+Browser->Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
+note over Server: Server asks the Browser to do a new HTTP GET request to the location specified in it's response header
+Server-->Browser: HTTP 302 redirect
+note over Browser: Browser reloads /notes causing three more HTTP requests
+
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Server-->Browser: main.js
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: [{content: "nooote", date: "2022-03-16T12:01:47.151Z"}, ...]
+
+note over Browser: Browser executes the event handler that renders notes to display

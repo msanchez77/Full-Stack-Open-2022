@@ -1,0 +1,8 @@
+title SPA New Note
+
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+note over Browser: Payload contains JSON data of submitted content ({"content": "wowooowow","date": "2022-03-16T17:17:10.370Z"})
+Server-->Browser: 201 Response (request has succeeded and has led to the creation of a resource)
+note over Server: Response contains success message {"message":"note created"}
+note over Browser: JavaScript code handles the displaying of the form data once it gets a successful resonse from server
+
