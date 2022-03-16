@@ -1,2 +1,3 @@
 # Full Stack Open 2022
- 
+
+Hello! My name is Matt Sanchez and my goal with this course is to strengthen my Web Development knowledge. I have a Computer Science degree and have built web applications for the past 2 years since my graduation in 2019. I am currently employed at Houndstooth Media Group as a Web Developer where we build websites from the ground up on WordPress. Mainly I want to improve my JavaScript abilities and begin making passion projects in my free time.
