@@ -23,8 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 favicon.ico
-/public
-*package*
+package-lock.json
 README.md
 manifest.json
 robots.txt
