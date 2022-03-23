@@ -54,6 +54,9 @@ Wrap elements to be returned with an empty element
 */
 
 
+
+
+
 /* 
 *
 CHAPTER 1.b JavaScript
@@ -262,11 +265,12 @@ new Hooks (https://reactjs.org/docs/hooks-intro.html)
 
 
 
+
 /* 
 *
 CHAPTER 1.c Component state, event handlers
 *
-*/
+*
 /* 
 Component Helper Functions
 It is very common in JS to define functions
@@ -283,6 +287,208 @@ Destructuring props
 const Hello = ({ name, age }) => {
 }
 */
+
+
+/* 
+Stateful Component
+
+import { useState } from 'react'
+const [ counter, setCounter ] = useState(0)
+
+  counter: "Preserves" some values between function
+            calls to 'setCounter'
+  setCounter: Function to be called to change state
+              Re-renders page
+*/
+
+
+/* 
+Event handlers are functions
+
+const App = () => {
+  const [ counter, setCounter ] = useState(0)
+
+  const increaseByOne = () => setCounter(counter + 1)
+  
+  const setToZero = () => setCounter(0)
+
+  return (
+    <div>
+      <div>{counter}</div>
+      <button onClick={increaseByOne}>
+        plus
+      </button>
+      <button onClick={setToZero}>
+        zero
+      </button>
+    </div>
+  )
+}
+
+An event handler is to be specified as either a
+function or a function reference
+
+<button onClick={setCounter(counter + 1)}>
+
+This would be a function call and cause the page to 
+continuously re-render
+
+*/
+
+
+/* 
+Lifting State Up
+
+In React, sharing state is accomplished by moving
+  it up to the closest common ancestor of the
+  components that need it. This is called 
+  “lifting state up”
+
+Instead of smaller components having their local state,
+  it gets passed down through props
+*/
+
+
+
+
+
+/* 
+*
+CHAPTER 1.d A more complex state, 
+*             debugging React apps
+*
+/* 
+
+/* 
+Complex state
+
+What is the easiest and best way to maintaining
+a complex state?
+  A: Using the useState function multiple times to
+      create separate "pieces" of state
+*/
+
+
+/* 
+Object spread
+
+  const newClicks = { 
+    ...clicks, 
+    left: clicks.left + 1 
+  }
+
+...clicks will create a new object that copies
+all properties of the click object
+
+Specifying any other properties will overwrite
+*/
+
+
+/* 
+Mutating state directly (FORBIDDEN)
+
+  const [clicks, setClicks] = useState({
+    left: 0, right: 0
+  })
+
+  const handleLeftClick = () => {
+    clicks.left++     // Mutating directly
+    setClicks(clicks)
+  }
+
+    return (
+      <div>
+        {clicks.left}
+        <button onClick={handleLeftClick}>left</button>
+        <button onClick={handleRightClick}>right</button>
+        {clicks.right}
+      </div>
+
+It is forbidden in React to mutate state directly
+
+Changing state must be done by setting the state to 
+a new object
+*/
+
+
+/* 
+Handling Arrays
+
+  // State array initialization
+  const [allClicks, setAll] = useState([])
+
+  const handleLeftClick = () => {
+    setAll(allClicks.concat('L'))
+    setLeft(left + 1)
+  }
+
+REMEMBER: .concat() creates a copy unlike .push() so
+          use .concat() with State Arrays
+*/
+
+
+/* 
+Conditional Rendering
+
+const History = (props) => {
+  if (props.allClicks.length === 0) {
+    return (
+      <div>
+        the app is used by pressing the buttons
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      button press history: {props.allClicks.join(' ')}
+    </div>
+  )
+}
+ */
+
+
+/* 
+Debugging in React
+
+console.log('props is ', props)
+
+DO NOT console.log('props is ' + props)
+
+Adding "debugger" anywhere in the code will stop 
+execution and you can check the value of variables, etc.
+*/
+
+
+/* 
+Rules of Hooks
+
+useState and useEffect can NOT be called in:
+1) Loops
+2) Conditional expressions
+3) Any place that is not a function definining a component
+
+  if ( age > 10 ) {
+    // this does not work!
+    const [foobar, setFoobar] = useState(null)
+  }
+
+  for ( let i = 0; i < age; i++ ) {
+    // also this is not good
+    const [rightWay, setRightWay] = useState(false)
+  }
+
+  const notGood = () => {
+    // and this is also illegal
+    const [x, setX] = useState(-1000)
+  }
+*/
+
+
+/* 
+
+*/
+
 
 
 
