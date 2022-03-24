@@ -486,17 +486,81 @@ useState and useEffect can NOT be called in:
 
 
 /* 
+Function that returns a function
+
+Functions returning functions can be utilized in defining 
+	generic functionality that can be customized with parameters.
+
+	const App = () => {
+		const [value, setValue] = useState(10)
+
+		const hello = (who) => {
+			const handler = () => {
+				console.log('hello', who)
+			}
+			return handler
+		}
+
+		return (
+			<div>
+				{value}
+				<button onClick={hello('world')}>button</button>
+				<button onClick={hello('react')}>button</button>
+				<button onClick={hello('function')}>button</button>
+			</div>
+		)
+	}
 
 */
 
 
+/* Defining dynamic event handlers 
+
+	const setToValue = (newValue) => () => {
+    console.log('value now', newValue)  // print the new value to console
+    setValue(newValue)
+  }
+
+	<button onClick={setToValue(1000)}>
+		thousand
+	</button>
+
+	--------------------------------------
+
+  const setToValue = (newValue) => {
+    console.log('value now', newValue)
+    setValue(newValue)
+  }
+
+	<button onClick={() => setToValue(1000)}>
+		thousand
+	</button>
+
+*/
 
 
+/* 
+Passing Event Handlers to Child Components
+
+	const Button = (props) => (
+		<button onClick={props.handleClick}>
+			{props.text}
+		</button>
+	)
+
+	<Button handleClick={() => setToValue(1000)} text="thousand" />
+*/
 
 
+/* 
+Do NOT define Components within Components
 
-
-
+ The biggest problems are due to the fact that React treats 
+ a component defined inside of another component as a new 
+ component in every render. 
+ 
+ This makes it impossible for React to optimize the component.
+*/
 
 
 
