@@ -1,37 +1,16 @@
-const List = ({collection}) => {
-	let html = ''
+import Note from './components/Note'
 
-	collection.forEach(element => {
-		html.concat(element.name)
-	});
-
-	console.log(html);
-	return <p>{html}</p>
-}
-
-const App = () => {
-  
-	let animals = [
-		{ name: 'Fido', species: 'dog' },
-		{ name: 'Caro', species: 'dog' },
-		{ name: 'Ursula', species: 'cat' },
-		{ name: 'Jimmy', species: 'fish' },
-	]
-
-	let isDog = (animal) => animal.species === 'dog'
-
-	let dogs = animals.filter(isDog)
-	// 'reject' is another HOF
-
-	debugger
-
+const App = ({ notes }) => {
   return (
     <div>
-      <List collection={dogs}/>
+      <h1>Notes</h1>
+      <ul>
+        {notes.map(note => 
+          <Note key={note.id} note={note} />
+        )}
+      </ul>
     </div>
   )
 }
-
-export default App
-
-
+  
+  export default App
