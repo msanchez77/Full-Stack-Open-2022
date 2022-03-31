@@ -128,6 +128,16 @@ Things learned here:
 	console.log(zoo); // ['🦊', '🐮', '🐧', '🐦', '🐤']
 */
 
+
+
+
+
+/* 
+*
+CHAPTER 2.a Rendering a collection, modules
+*
+*/
+
 /* 
 Rendering Collections
 
@@ -212,4 +222,25 @@ New Component Reminders:
 
 Modules have plenty of other uses other than enabling component declarations
 	--> Will go over later in the course
+*/
+
+
+/* 
+IMPORTANT DESIGN FOR GENERALIZING CONTENT
+
+Making an array of objects into readable HTML elements has followed this
+1) Parent Component passing the array
+2) Transition Comoponent passing the .map() output to the single
+		template component
+3) Template Component feeds the content's information to its respective
+		child component
+4) Children Component output the HTML
+
+*/
+
+
+/* 
+*
+CHAPTER 2.b Forms
+*
 */
