@@ -244,3 +244,22 @@ Making an array of objects into readable HTML elements has followed this
 CHAPTER 2.b Forms
 *
 */
+
+/* 
+Controlled component
+
+A React component that controls the state of a form element (i.e.
+	<input>, <textarea>, <select>)
+
+Typically a form element maintains its own state and updated based
+	on user input
+
+*/
+
+/* 
+Debugging Components
+
+<div>debug: {newName}</div>
+
+Helpful to keep track of a State variable
+*/
