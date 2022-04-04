@@ -263,3 +263,143 @@ Debugging Components
 
 Helpful to keep track of a State variable
 */
+
+
+
+/* 
+*
+CHAPTER 2.c Getting data from server
+*
+*/
+/* 
+Intro 
+
+Start json-server
+npx json-server --port 3001 --watch db.json
+*/
+
+/* 
+The browser as a runtime environment
+
+JavaScript engines, or runtime environments (i.e. Chrome) follow
+the asynchronous model, so all IO-operations are required to 
+be executed as non-blocking
+
+Event handlers are called some point after an asynchronous operation
+is completed
+
+JavaScript is single-threaded
+--> It cannot execute code in parallel
+--> Therefore it is important to use a non-blocking model so
+	the browser doesn't "freeze" during one operation
+
+The code logic needs to be such that no single computation can take 
+too long
+*/
+
+/* 
+Web Workers
+
+Today, browsers run parallelized code with web workers
+--> https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
+--> The event loop of an individual browser window is still single thread
+
+You can run whatever code inside a worker thread with some exceptions
+--> No directly manipulating the DOM inside a worker
+--> No using some default methods and properties of the 'window' object
+*/
+
+/* 
+NPM
+
+We have two options for pulling data from the server
+1) fetch
+--> promise based function that is standardized and supported 
+	by all modern browsers
+2) axis
+--> external library that function like fetch and is more pleasant to use
+--> Imported using NPM
+
+** A "package.json" file indicates if a project is using NPM
+*/
+
+/* 
+NPM Installs
+
+Runtime dependency
+--> An install that the program requires the 
+	existence of the library
+
+--> npm install axios
+
+Development dependency
+--> The program doesn't require it, instead it is
+	used for assistance during software development
+
+--> npm install json-server --save-dev
+*/
+
+/* 
+Axios and promises
+
+Remember: import axios from 'axios'
+
+const promise = axios.get('http://localhost:3001/notes')
+--> .get() returns a promise
+	--> A Promise is an object repr the eventual completion or failure
+		 of an asynchronous operation
+
+A Promise has 3 distinct states
+1) Pending: Final value is not available yet
+2) Fulfilled: Operation completed, final value is available
+	--> Generally means a successful operation
+	--> Might be referred to as 'resolved'
+3) Rejected: An error prevented the final value from being determined
+	--> Generally means a failed operation
+
+To access the contents of a Promise object, we must register an 
+event handler to the promise using "then"
+
+promise.then(response => {
+	console.log(response)
+})
+
+--> response : {
+		"data": ...,
+		"status": 200,
+		"statusText": "OK",
+		"headers": {...},
+		"config": {...},
+		"request": {}
+	}
+
+response.data will contain the returned object (in our case the JSON)
+
+
+It is usually unnecessary to store the promise object, and is instead 
+common to chain the "then" method to "get"
+--> axios
+		.get('http://localhost:3001/notes')
+		.then(response => {
+			const notes = response.data
+			console.log(notes)
+		})
+*/
+
+/* 
+Effect-hooks
+
+Effect-hooks lets you perform side effects in function components
+--> State hooks provided state to React components defined as functions
+--> A side effect can be Data fetching, Setting up a subscription,
+	manually changing the DOM
+
+By default, Effect-hooks are run after every completed render
+--> You can choose to fire it only when certain values are changed
+
+Takes two parameters
+1) A function (the effect itself)
+2) An object to watch that the effect depends on
+	--> Passing an empty array, [], will only run along the first render
+
+*/
