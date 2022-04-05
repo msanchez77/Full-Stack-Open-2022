@@ -1,6 +1,14 @@
-import React from 'react'
+/* import { useEffect, React } from 'react'
+import axios from 'axios'
 
-const CountryName = ({name}) => <p>{name}</p>
+const CountryName = ({name}) => {
+
+	return (
+		<div>
+			<p>{name}</p>
+		</div>
+	)
+}
 const CountryListItem = (props) => <li>{props.item}</li>
 
 const CountryInfo = (props) => {
@@ -25,6 +33,8 @@ const CountryInfo = (props) => {
 }
 
 const Countries = (props) => {
+
+	const show = true
   
   if (props.results.length > 10) {
     return <p>Too many matches, specify another filter</p>
@@ -32,7 +42,6 @@ const Countries = (props) => {
     return <p>No matches, specify another filter</p>
   } else if (props.results.length === 1) {
     let { name, capital, area, languages, flags } = props.results[0]
-
     return (
       <>
         <CountryInfo name={name} capital={capital} area={area} languages={languages} flag={flags.png}/>
@@ -50,4 +59,4 @@ const Countries = (props) => {
 
 }
 
-export default Countries
+export default Countries */
