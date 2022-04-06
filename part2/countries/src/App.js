@@ -14,7 +14,7 @@ const CountryName = ({name}) => {
 			.then(response => {
 				setSingleCountryState(response.data)
 			})
-	}, [])
+	})
 
 	return (
 		<div style={{marginTop: "10px", marginBottom: "10px"}}>
@@ -58,6 +58,35 @@ const CountryInfo = (props) => {
   )
 }
 
+const CapitalWeather = ({capital}) => {
+
+  const [weatherState, setWeatherState] = useState({})
+  const api_key = process.env.REACT_APP_API_KEY
+
+  useEffect(() => {
+		axios
+			.get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&units=metric&appid=${api_key}`)
+			.then(response => {
+        setWeatherState(response.data)
+			})
+	})
+
+  if (Object.keys(weatherState).length !== 0) {
+    return (
+      <>
+        <h2>Weather in {capital}</h2>
+        <p>temperature {weatherState.main.temp} Celcius</p>
+        <img src={`http://openweathermap.org/img/wn/${weatherState.weather[0].icon}@2x.png`} alt="weather icon" width={100} />
+        <p>wind {weatherState.wind.speed} m/s</p>
+      </>
+    )
+  } else {
+    return <h2>Retrieving {capital} weather info...</h2>
+  }
+
+  
+}
+
 const Countries = (props) => {
   
   if (props.results.length > 10) {
@@ -69,6 +98,7 @@ const Countries = (props) => {
     return (
       <>
         <CountryInfo name={name} capital={capital} area={area} languages={languages} flag={flags.png}/>
+        <CapitalWeather capital={capital} />
       </>
     )
   } else {
@@ -82,7 +112,6 @@ const Countries = (props) => {
   }
 
 }
-
 const App = () => {
   const [countries, setCountries] = useState([])
   const [search, setSearch] = useState('')
@@ -95,13 +124,11 @@ const App = () => {
       .then(response => {
         setCountries(response.data)
       })
-  }, [])
+  })
 
   const handleSearch = (event) => {
 
-    let query = event.target.value
-
-    // set Countries
+    let query = event.target.value // set Countries
     let curr = countries.filter((country) => {
       let s = query.toLowerCase()
       let r = country.name.common.toLowerCase()
