@@ -9,7 +9,7 @@ Higher Order Functions
 Remember in JavaScript: Functions are values
 
 var triple = function(x) {
-	return x * 3
+  return x * 3
 }
 
 We can pass this function into antoher function
@@ -26,10 +26,10 @@ When we write our code in small simple functions
 'filter' is a common higher order function
 
 var animals = [
-	{ name: 'Fido', species: 'dog' },
-	{ name: 'Caro', species: 'dog' },
-	{ name: 'Ursula', species: 'cat' },
-	{ name: 'Jimmy', species: 'fish' },
+  { name: 'Fido', species: 'dog' },
+  { name: 'Caro', species: 'dog' },
+  { name: 'Ursula', species: 'cat' },
+  { name: 'Jimmy', species: 'fish' },
 ]
 
 var isDog = (animal) => animal.species === 'dog'
@@ -37,12 +37,12 @@ var isDog = (animal) => animal.species === 'dog'
 var dogs = animals.filter(isDog)
 
 // 'reject' in not a built-in function but its
-	function will do the reverse of 'filter'
+  function will do the reverse of 'filter'
 var others = animals.reject(isDog)
 
 
 'find' is similar to 'filter' but will only return
-	the first occurence of True
+  the first occurence of True
 */
 
 /* 
@@ -50,7 +50,7 @@ Map
 
 Unlike filter which expects True and False outputs,
 Map expects its callback function to return a 
-	transformed object that it will put in the new array
+  transformed object that it will put in the new array
 */
 
 /* 
@@ -59,73 +59,73 @@ Reduce (basic)
 The multi-tool of list transformations
 
 Useful to fallback on when no other built-in
-	list transformation function fits your problem
+  list transformation function fits your problem
 
 var orders = [
-	{amount: 250},
-	{amount: 400},
-	{amount: 100},
-	{amount: 325}
+  {amount: 250},
+  {amount: 400},
+  {amount: 100},
+  {amount: 325}
 ]
 
 var total = orders.reduce(function(sum, order) {
-	return sum + order.amount
+  return sum + order.amount
 }, 0)
 
 Notice the 2 arguments it takes 
-	1) Compounding result
-	2) Iterating element
+  1) Compounding result
+  2) Iterating element
 */
 
 /* 
 Reduce (advanced)
 
 Above we saw how 'reduce' can transform an array 
-	into a single number
+  into a single number
 
 'reduce' can have many more outputs such as
-	another array or object
+  another array or object
 
 
 // Had to add "type": "module" to package.json to import
 import fs from 'fs'
 
 var output = fs.readFileSync('data.txt', 'utf8')
-	.trim()
-	.split('\r\n')
-	.map(line => line.split('\t'))
-	.reduce((customers, line) => {
-		customers[line[0]] = customers[line[0]] || []
-		customers[line[0]].push({
-			name: line[1],
-			price: line[2],
-			quantity: line[3]
-		})
-		return customers
-	}, {})
+  .trim()
+  .split('\r\n')
+  .map(line => line.split('\t'))
+  .reduce((customers, line) => {
+    customers[line[0]] = customers[line[0]] || []
+    customers[line[0]].push({
+      name: line[1],
+      price: line[2],
+      quantity: line[3]
+    })
+    return customers
+  }, {})
 
 console.log(output)
 
 Things learned here:
-	1) trim() will remove linebreaks/spaces at the 
-		start or end of a string
-	2) customers[line[0]] = customers[line[0]] || []
-		very helpful way to either initialize array
-		or if already init'd --> skip
-	3) push(): Remember this is the way to append to 
-		the array
-	3b) concat(): Create new object and append to that
+  1) trim() will remove linebreaks/spaces at the 
+    start or end of a string
+  2) customers[line[0]] = customers[line[0]] || []
+    very helpful way to either initialize array
+    or if already init'd --> skip
+  3) push(): Remember this is the way to append to 
+    the array
+  3b) concat(): Create new object and append to that
 
-	const zoo = ['🦊', '🐮'];
-	const birds = ['🐧', '🐦', '🐤'];
+  const zoo = ['🦊', '🐮'];
+  const birds = ['🐧', '🐦', '🐤'];
 
-	// pushing an array requires the spread syntax
-	zoo.push(...birds);
+  // pushing an array requires the spread syntax
+  zoo.push(...birds);
 
-	// concat does not
-	const new = zoo.concat(birds);
+  // concat does not
+  const new = zoo.concat(birds);
 
-	console.log(zoo); // ['🦊', '🐮', '🐧', '🐦', '🐤']
+  console.log(zoo); // ['🦊', '🐮', '🐧', '🐦', '🐤']
 */
 
 
@@ -143,7 +143,7 @@ Rendering Collections
 
 Given a list of objects : notes
 What can we do to wrap each element with an <li> so we don't hardcode
-	notes.map(note => <li>{note.content}</li>)
+  notes.map(note => <li>{note.content}</li>)
 
 const App = (props) => {
   const { notes } = props
@@ -167,18 +167,18 @@ const App = (props) => {
 Key-attribute
 
 Running the application from above will output a warning stating that
-	"Each child in an array or iterator should have a unique 'key' prop"
+  "Each child in an array or iterator should have a unique 'key' prop"
 
-	{notes.map(note => 
-		<li key={note.id}> //React uses the key attributes to determine
-		{note.content}			how to update the view on re-renders
-		</li>
-	)}
+  {notes.map(note => 
+    <li key={note.id}> //React uses the key attributes to determine
+    {note.content}			how to update the view on re-renders
+    </li>
+  )}
 
-	** Remember JavaScript and JSX MUST BE wrapped in {} **
+  ** Remember JavaScript and JSX MUST BE wrapped in {} **
 
 When adding an element at the beginning of the children, React will
-	inefficiently mutate every child.
+  inefficiently mutate every child.
 
 Key attributes will solve this issue by matching the children to their key
 */
@@ -195,17 +195,17 @@ Second parameter of map can be assigned to index of element in array
 Refactoring Modules
 
 Refactoring the App component to render a Note component
-	const Note = ({ note }) => {
-  	return (
-    	<li>{note.content}</li>
-  	)
-	}
+  const Note = ({ note }) => {
+    return (
+      <li>{note.content}</li>
+    )
+  }
 
-	...
+  ...
 
-	{notes.map(note => 
-		<Note key={note.id} note={note} />
-	)}
+  {notes.map(note => 
+    <Note key={note.id} note={note} />
+  )}
 
 Notice how the 'key' attribute is defined in the Note component rather
 than the <li> element
@@ -215,13 +215,13 @@ than the <li> element
 Spreading Out Components to their own Modules
 
 New Component Reminders:
-	1) For smaller applications, we can put a directory of components in
-			/src/components/
-	2) export default <Component>
-	3) import <Component> from './components/<Component>'
+  1) For smaller applications, we can put a directory of components in
+      /src/components/
+  2) export default <Component>
+  3) import <Component> from './components/<Component>'
 
 Modules have plenty of other uses other than enabling component declarations
-	--> Will go over later in the course
+  --> Will go over later in the course
 */
 
 
@@ -231,9 +231,9 @@ IMPORTANT DESIGN FOR GENERALIZING CONTENT
 Making an array of objects into readable HTML elements has followed this
 1) Parent Component passing the array
 2) Transition Comoponent passing the .map() output to the single
-		template component
+    template component
 3) Template Component feeds the content's information to its respective
-		child component
+    child component
 4) Children Component output the HTML
 
 */
@@ -249,10 +249,10 @@ CHAPTER 2.b Forms
 Controlled component
 
 A React component that controls the state of a form element (i.e.
-	<input>, <textarea>, <select>)
+  <input>, <textarea>, <select>)
 
 Typically a form element maintains its own state and updated based
-	on user input
+  on user input
 
 */
 
@@ -291,7 +291,7 @@ is completed
 JavaScript is single-threaded
 --> It cannot execute code in parallel
 --> Therefore it is important to use a non-blocking model so
-	the browser doesn't "freeze" during one operation
+  the browser doesn't "freeze" during one operation
 
 The code logic needs to be such that no single computation can take 
 too long
@@ -315,7 +315,7 @@ NPM
 We have two options for pulling data from the server
 1) fetch
 --> promise based function that is standardized and supported 
-	by all modern browsers
+  by all modern browsers
 2) axis
 --> external library that function like fetch and is more pleasant to use
 --> Imported using NPM
@@ -328,13 +328,13 @@ NPM Installs
 
 Runtime dependency
 --> An install that the program requires the 
-	existence of the library
+  existence of the library
 
 --> npm install axios
 
 Development dependency
 --> The program doesn't require it, instead it is
-	used for assistance during software development
+  used for assistance during software development
 
 --> npm install json-server --save-dev
 */
@@ -346,32 +346,32 @@ Remember: import axios from 'axios'
 
 const promise = axios.get('http://localhost:3001/notes')
 --> .get() returns a promise
-	--> A Promise is an object repr the eventual completion or failure
-		 of an asynchronous operation
+  --> A Promise is an object repr the eventual completion or failure
+     of an asynchronous operation
 
 A Promise has 3 distinct states
 1) Pending: Final value is not available yet
 2) Fulfilled: Operation completed, final value is available
-	--> Generally means a successful operation
-	--> Might be referred to as 'resolved'
+  --> Generally means a successful operation
+  --> Might be referred to as 'resolved'
 3) Rejected: An error prevented the final value from being determined
-	--> Generally means a failed operation
+  --> Generally means a failed operation
 
 To access the contents of a Promise object, we must register an 
 event handler to the promise using "then"
 
 promise.then(response => {
-	console.log(response)
+  console.log(response)
 })
 
 --> response : {
-		"data": ...,
-		"status": 200,
-		"statusText": "OK",
-		"headers": {...},
-		"config": {...},
-		"request": {}
-	}
+    "data": ...,
+    "status": 200,
+    "statusText": "OK",
+    "headers": {...},
+    "config": {...},
+    "request": {}
+  }
 
 response.data will contain the returned object (in our case the JSON)
 
@@ -379,11 +379,11 @@ response.data will contain the returned object (in our case the JSON)
 It is usually unnecessary to store the promise object, and is instead 
 common to chain the "then" method to "get"
 --> axios
-		.get('http://localhost:3001/notes')
-		.then(response => {
-			const notes = response.data
-			console.log(notes)
-		})
+    .get('http://localhost:3001/notes')
+    .then(response => {
+      const notes = response.data
+      console.log(notes)
+    })
 */
 
 /* 
@@ -392,7 +392,7 @@ Effect-hooks
 Effect-hooks lets you perform side effects in function components
 --> State hooks provided state to React components defined as functions
 --> A side effect can be Data fetching, Setting up a subscription,
-	manually changing the DOM
+  manually changing the DOM
 
 By default, Effect-hooks are run after every completed render
 --> You can choose to fire it only when certain values are changed
@@ -400,6 +400,112 @@ By default, Effect-hooks are run after every completed render
 Takes two parameters
 1) A function (the effect itself)
 2) An object to watch that the effect depends on
-	--> Passing an empty array, [], will only run along the first render
+  --> Passing an empty array, [], will only run along the first render
+
+*/
+
+/* 
+Learned after exercises
+
+Remember to restart server after adding to .env
+
+Asynchronous nature of useEffect requires a
+  condition check for emptyness
+--> Ex: Object.keys(weatherState).length !== 0
+          State was initialized to {}
+--> A show/hide button didn't need this since it is
+  given time to fetch data
+
+Can't 'return' in useEffect
+
+Leave API calls in a useEffect to limit requests
+
+Store fetched data in State variable since calling
+  it's update function will re-render the DOM
+
+Object.keys is powerful
+--> Returns an array of Object's keys
+--> Use with map to get array of values
+
+Template strings use the backtick (`...`)
+--> Format strings with ${...}
+*/
+
+
+
+/* 
+*
+CHAPTER 2.d Altering data in server
+*
+*/
+
+/* 
+Intro
+
+Most API's (including json-server) don't actually use RESTful practices
+    even though they claim they do
+
+This part will focus on the conventional use of 
+1) Routes (URLs)
+2) HTTP request types
+*/
+
+/* 
+REST
+
+Individual data objects are referred to as resources
+
+Resources are fetched from the server with HTTP GET requests
+    /notes : List of all notes
+    /notes/{id} : Individual note
+
+Resources are added to the server with HTTP POST requests
+    json-server expects a JSON formatted string and must contain
+    a "Content-Type" request header --> "application/json" value
+*/
+
+/* 
+Sending Data to the server
+
+When posting a new object through a POST request, it is okay to
+    omit the "id" property since the server will generate them
+    causing less overhead
+
+IMPORTANT: Now that we are using the server to effect our web app,
+    we need to consider the challenges that come with it
+    --> Asynchronicity of communication
+    --> Relationship between JS runtime and React components
+*/
+
+/* 
+Changing the Importance of Notes
+
+The objects stored in the json-server can be modified in one of 
+  two ways by making the HTTP request to the object's unique URL
+  (http://localhost:3001/notes/${id})
+
+  1) HTTP PUT : Replaces the entire note
+  2) HTTP PATCH : Only changes some of the notes properties
+
+To pull out a specific note based on id
+--> const note = notes.find(n => n.id === id)
+and edit
+--> const changedNote = { ...note, important: !note.important }
+*/
+
+/* 
+Extracting Communication with the Backend into a Separate Module
+
+Exporting multiple functions from module as object with their 
+  respective functions as values
+
+  export default {
+    getAll: getAll,
+    create: create,
+    update: update
+  }
+
+
+
 
 */
