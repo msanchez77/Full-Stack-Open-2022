@@ -496,16 +496,115 @@ and edit
 /* 
 Extracting Communication with the Backend into a Separate Module
 
-Exporting multiple functions from module as object with their 
-  respective functions as values
+Exporting multiple functions from module as object of functions
+	Assign to variabel first to remove runtime warning
+	const exportObj = {
+		getAll,
+		create,
+		update
+	}
 
-  export default {
-    getAll: getAll,
-    create: create,
-    update: update
-  }
+	export default exportObj;
+
+*/
+
+/* 
+Promises Chaining (https://javascript.info/promise-chaining)
+
+new Promise(function(resolve, reject) {
+
+  setTimeout(() => resolve(1), 1000); // (*)
+
+}).then(function(result) { // (**)
+
+  alert(result); // 1
+  return result * 2;
+
+}).then(function(result) { // (***)
+})...
+
+You can chain .then handlers off each other
+
+A classic newbie error: technically we can also add many 
+	.then to a single promise. This is not chaining.
 
 
+
+Returning promises
+--> Technically, a handler returns a "thenable" object
+		which will be treated the same way as a promise, 
+		but is designated for 3rd-party libraries with 
+		"promise-compatible" objects that implement their
+		own .then method
+
+new Promise(function(resolve, reject) {
+
+  setTimeout(() => resolve(1), 1000);
+
+}).then(function(result) {
+
+  alert(result); // 1
+
+  return new Promise((resolve, reject) => { // (*)
+    setTimeout(() => resolve(result * 2), 1000);
+  });
+
+})
+*/
+
+/* 
+Cleaner Syntax for Defining Obj Literals 
+
+If you're creating an object where the property fields
+	and variable names are the same, it is enough to write
+	--> const person = { name, age }
+	--> INSTEAD OF 	const person = {
+										name: name,
+  									age: age
+									}
+*/
+
+/* 
+Promises and Errors
+
+Remember, a promise can be in one of three different states
+1) Pending		2) Fulfilled		3) Rejected
+
+A rejection of a promise is handled by either:
+	a) A second callback provided to the "then" method
+	b) More common --> catch method
+	     axios
+				.get('http://example.com/probably_will_fail')
+				.then(response => {
+					console.log('success!')
+				})
+				.catch(error => {
+					console.log('fail')
+				})
+
+A catch method at the end of a Promise chain will 
+  be called if ANY promise in the chain throws an error
+
+
+*/
+
+
+/* 
+Learned after exercises
+
+Components and keys
+  Rule of thumb: Elements inside the map() need keys
+	Ran into this when surrounding a child component in a div
+	--> Both the Div and the Child Component (Person) needed a key
+
+Still confused about bringing state to the same level and
+  having to keep everything in App to manipulate state
+
+	--> I have refactored my phonebook to now have each child 
+				component (e.g. PersonForm, Filter, and Persons/Person)
+				have their own file and passing state down from App
+	--> Important to declare component methods INSIDE component
+	--> Treat component as a class in OOP
 
 
 */

@@ -1,11 +1,27 @@
 import React from 'react'
 
-const Filter = (props) => (
+const Filter = ({search, setSearch, persons, setPersons}) => {
+
+	const handleSearch = (event) => {
+		// filter
+		setSearch(event.target.value)
+	
+		const search = event.target.value
+		const results = persons.filter((person) => {
+			return person.name.toLowerCase().includes(search.toLowerCase())
+		})
+	
+		// view
+		setPersons(results)
+	}
+
+	return (
     <div>filter shown with <input
-                                value={props.search}
-                                onChange={props.handleSearch}
+                                value={search}
+                                onChange={handleSearch}
                             />
-    </div>  
-)
+    </div>
+	)  
+}
 
 export default Filter

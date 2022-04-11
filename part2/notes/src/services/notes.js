@@ -1,23 +1,31 @@
 import axios from "axios"
 const baseURL = 'http://localhost:3001/notes'
 
+// Returning the "then" method on the request variable instead
+// of returning the promise for the Component to call "then"
+
 const getAll = async () => {
 	const request = axios.get(baseURL)
 	const response = await request
-
 	return response.data
 }
 
-const create = newObject => {
-	return axios.post(baseURL, newObject)
+const create = async newObject => {
+  const request = axios.post(baseURL, newObject)
+  const response = await request
+	return response.data
 }
 
-const update = (id, newObject) => {
-	return axios.put(`${baseURL}/${id}`, newObject)
+const update = async (id, newObject) => {
+  const request = axios.put(`${baseURL}/${id}`, newObject)
+  const response = await request
+	return response.data
 }
 
-export default {
-	getAll: getAll,
-	create: create,
-	update: update
+const exportObj = {
+	getAll,
+	create,
+	update
 }
+
+export default exportObj;
