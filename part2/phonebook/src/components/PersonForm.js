@@ -8,7 +8,9 @@ const PersonForm = ({
 									newName, 
 									setNewName,
 									newNumber,
-									setNewNumber
+									setNewNumber,
+                  notification,
+                  setNotification
 								}) => {
 
 
@@ -56,6 +58,14 @@ const PersonForm = ({
 					.then(returnedPerson => {
 						setPersons(persons.map(p => p.id !== changedPerson.id ? p : returnedPerson))
 					})
+          .catch(error => {
+            setNotification(
+              `Information of ${newName} has already been removed from server`
+            )
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)
+          })
 			}
     } else {
       const addPerson = {
@@ -69,6 +79,10 @@ const PersonForm = ({
 					setPersons(persons.concat(returnedPerson))
 					setNewName('')
 					setNewNumber('')
+          setNotification(`Added ${newName}`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
 				})
 
     }

@@ -608,3 +608,41 @@ Still confused about bringing state to the same level and
 
 
 */
+
+
+
+/* 
+*
+CHAPTER 2.e Adding styles to React app
+*
+*/
+
+/* 
+Inline styles
+
+const footerStyle = {
+    color: 'green',
+    fontStyle: 'italic',
+    fontSize: 16
+  }
+
+<div style={footerStyle}>
+
+Notice: CSS --> font-size
+        JS  --> fontSize
+
+Psuedo-classes (:hover, :active, :before, etc.. can't be used as inline)
+*/
+
+/* 
+Inline styles and old conventions
+
+Tradtionally it is considered best practice to separate CSS, HTML and JS
+--> However in React since the separation of CSS, HTML and JS does not
+      scale well with larger applications, the philosophy of React
+      is to separate the application along the lines of logical
+      functional entities (Components)
+
+    React Components define the HTML, JS functions and Component's
+      style all in one place
+*/
