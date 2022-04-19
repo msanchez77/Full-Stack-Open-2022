@@ -1,5 +1,5 @@
 import axios from "axios"
-const baseURL = 'http://localhost:3001/notes'
+const baseURL = '/api/notes'
 
 // Returning the "then" method on the request variable instead
 // of returning the promise for the Component to call "then"
