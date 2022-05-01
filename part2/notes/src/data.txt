@@ -4,3 +4,5 @@ mark johnson	knife	10	4
 nikita smith	waffle iron	80	1
 nikita smith	knife	10	2
 nikita smith	pot	20	3
+
+(Higher order funcitons video)

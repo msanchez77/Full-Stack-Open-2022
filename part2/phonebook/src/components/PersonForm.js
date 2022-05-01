@@ -14,6 +14,13 @@ const PersonForm = ({
 								}) => {
 
 
+  const notify = (message, type='info') => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification(null)
+    }, 3000)
+  }
+
   const isDuplicate = (name) => {
     const current_persons = personService.getNames(persons)
 
@@ -57,13 +64,21 @@ const PersonForm = ({
 					.update(changedPerson)
 					.then(returnedPerson => {
 						setPersons(persons.map(p => p.id !== changedPerson.id ? p : returnedPerson))
+            setNewName('')
+            setNewNumber('')
+            notify(`Updated ${newName}`)
+            setTimeout(() => {
+              notify(null)
+            }, 5000)
 					})
           .catch(error => {
-            setNotification(
-              `Information of ${newName} has already been removed from server`
+            console.error(error)
+            notify(
+              `Information of ${newName} has already been removed from server`,
+              'alert'
             )
             setTimeout(() => {
-              setNotification(null)
+              notify(null)
             }, 5000)
           })
 			}
@@ -79,9 +94,9 @@ const PersonForm = ({
 					setPersons(persons.concat(returnedPerson))
 					setNewName('')
 					setNewNumber('')
-          setNotification(`Added ${newName}`)
+          notify(`Added ${newName}`)
           setTimeout(() => {
-            setNotification(null)
+            notify(null)
           }, 5000)
 				})
 

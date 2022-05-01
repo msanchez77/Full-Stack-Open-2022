@@ -26,7 +26,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      <Notification notification={notification} />
       <Filter 
 				search={search}
 				setSearch={setSearch}
