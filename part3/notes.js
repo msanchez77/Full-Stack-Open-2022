@@ -568,5 +568,87 @@ Thing learned Exercises 3.15-3.18
 
 Node module exports are different than ES6
 
-Getting MongoDB collections count is troubling me
+Getting MongoDB collections count is troubling me... Ok though
+haven't gotten to that part yet and wasn't an assignment. Not ready
+*/
+
+
+
+
+
+/* 
+*
+CHAPTER 3.d Validation and ESLint
+*
+*/
+
+/* 
+Intro
+
+Validate format of data with Validation functionality through Mongoose
+
+Can add restrictions to Schema fields
+--> const noteSchema = new mongoose.Schema({
+    content: {
+      type: String,
+      minLength: 5,
+      required: true
+    },
+    date: { 
+      type: Date,
+      required: true
+    },
+    important: Boolean
+  })
+
+Mongoose will return a <ValidationError>
+*/
+
+/* 
+Deploying the database backend to production
+
+Set environment variables for Heroku app to use
+--> heroku config:set MONGODB_URI=mongodb+srv://fullstack:secretpasswordhere@cluster0-ostce.mongodb.net/note-app?retryWrites=true
+*/
+
+
+/* 
+Lint
+
+Detects and flags errors in code, including stylistic errors
+
+Most popular in JavaScript is ESlint
+--> npm install eslint --save-dev
+Initialize a default ESlint config
+--> npx eslint --init
+
+npm script
+--> "lint": "eslint ."
+--> Checks every file in the project
+
+VS Code ESlint plugin will underline style violations
+
+ESlint rules (https://eslint.org/docs/rules/) can be added to the 
+.eslintrc.js file
+--> 'rules': {
+    'eqeqeq': 'error', --> Warns us if equality is checked with anything other than === (x3)
+    'no-trailing-spaces': 'error', --> Unnecessary trailing spaces at end of lines
+    'object-curly-spacing': [
+        'error', 'always' 
+    ], --> Requires a space before and after curly braces
+    'arrow-spacing': [
+        'error', { 'before': true, 'after': true }
+    ] --> Requires consistent use of whitespaces in function parameters of arrow functions
+  },
+
+
+'extends': 'eslint:recommended',
+--> Default configuration with several predetermined rules
+--> By default, the recommended rules will warn about console.log
+----> Disable with 'no-console': 0
+
+Recently many projects have adopted the Airbnb Javascript style guide 
+by taking Airbnb's ESlint configuration into use.
+--> https://github.com/airbnb/javascript
+--> https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb
 */

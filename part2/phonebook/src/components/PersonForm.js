@@ -99,6 +99,10 @@ const PersonForm = ({
             notify(null)
           }, 5000)
 				})
+        .catch(error => {
+          notify(error.response.data.error, 'alert')
+          console.log(error.response.data)
+        })
 
     }
   }
