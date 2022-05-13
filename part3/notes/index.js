@@ -1,7 +1,6 @@
 // Libraries
 require('dotenv').config()
 
-const { response } = require('express')
 const express = require('express')
 
 const Note = require('./models/note')
@@ -11,12 +10,6 @@ const app = express()
 
 
 // Helpers
-const generateId = () => {
-  const maxId = notes.length > 0
-    ? Math.max(...notes.map(n => n.id))
-    : 0
-  return maxId + 1
-}
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
   console.log('Path:  ', request.path)
@@ -55,10 +48,10 @@ app.get('/api/notes/:id', (request, response, next) => {
       response.status(404).end()
     }
   })
-  .catch(error => {
-    // Error handling moved to Middleware
-    next(error)
-  })
+    .catch(error => {
+      // Error handling moved to Middleware
+      next(error)
+    })
 })
 
 
@@ -79,14 +72,14 @@ app.post('/api/notes', (request, response, next) => {
     })
     .catch(error => next(error))
 })
-  
+
 
 
 app.delete('/api/notes/:id', (request, response, next) => {
   Note.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(
       response.status(204).end()
-    })
+    )
     .catch(error => next(error))
 })
 
@@ -95,9 +88,9 @@ app.put('/api/notes/:id', (request, response, next) => {
   const { content, important } = request.body
 
   Note.findByIdAndUpdate(
-    request.params.id, 
+    request.params.id,
     { content, important },
-    { new:true, runValidators:true, context:'query' }
+    { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedNote => {
       response.json(updatedNote)
