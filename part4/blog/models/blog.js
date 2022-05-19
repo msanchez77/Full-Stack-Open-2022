@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const User = require('../models/user')
 
 const blogSchema = new mongoose.Schema({
   title: {
@@ -8,6 +9,10 @@ const blogSchema = new mongoose.Schema({
   author: {
     type: String,
     required: true
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   url: String,
   likes: {

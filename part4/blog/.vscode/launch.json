@@ -17,9 +17,42 @@
         "run-script", 
         "test", 
         "--", 
-        "tests/blog_api.test.js"
+        "tests/blog_api.test.js",
+        "-t",
+        "'updating'"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Test User",
+      "skipFiles": [
+        "<node_internals>/**"
       ],
-      "port": 3003 
+      "program": "${workspaceFolder}\\tests\\user_api.test.js",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script", 
+        "test", 
+        "--", 
+        "tests/user_api.test.js"
+      ]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Test Login",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}\\tests\\login_api.test.js",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run-script", 
+        "test", 
+        "--", 
+        "tests/login_api.test.js"
+      ]
     }
   ]
 }
