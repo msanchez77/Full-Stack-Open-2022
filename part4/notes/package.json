@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "build:ui": "rm -rf build && cd ../../part2/notes/ && npm run build && cp -r build ../../part4/notes",
+    "build:ui": "rm -rf build && cd ../../part5/part2-notes/ && npm run build && cp -r build ../../part4/notes",
     "deploy": "git push heroku HEAD:master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
