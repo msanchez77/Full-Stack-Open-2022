@@ -143,3 +143,41 @@ const Togglable = forwardRef((props, ref) => {
 * The function that **creates** the wrapping/parent component is wrapped inside of a **forwardRef** function call
 * The wrapping component then uses the **useImperativeHandle** hook to make its toggleVisibility function available **outside** the component
 * Now inside the App component, we can toggle the visibility by calling **noteFormRef.current.toggleVisibility()**
+
+### **PropTypes**
+Expected and required props of a component can be defined with the **prop-types** package
+```javascript
+import PropTypes from 'prop-types'
+
+const Togglable = React.forwardRef((props, ref) => {
+  // ..
+})
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string.isRequired
+  // Functions: PropTypes.func.isRequired
+}
+```
+### **ESlint**
+Adding to the frontend (backend has already been installed)
+* Create-react-app installs ESlint
+* install **eslint-plugin-jest** as a dev dependency
+* Create *.eslintrc.js* file
+* Create *.eslintignore* file 
+* Create *eslint* script
+
+If a Component doesn't have a name
+```javascript
+Togglable.displayName = 'Togglable'
+```
+
+### Important ESLint Settings
+```javascript
+  'parserOptions': {
+    'ecmaFeatures': {
+      'jsx': true
+    },
+    'ecmaVersion': 'latest',
+    'sourceType': 'module'
+  },
+```

@@ -9,9 +9,19 @@ const logger = require('../utils/logger')
 
 
 blogRouter.get('/', async (request, response) => {
-  const blogs = await Blog
-    .find({}).populate('user', { username: 1, name: 1 })
-  response.json(blogs)
+
+  if (request.query.author) {
+    console.log("Logged User")
+    const blogs = await Blog.find({author:request.query.author})
+    response.json(blogs)
+  } else if (request.query.title) {
+    const blogs = await Blog.find({title:request.query.title})
+    response.json(blogs)
+  } else {
+    const blogs = await Blog
+      .find({}).populate('user', { username: 1, name: 1 })
+    response.json(blogs)
+  }
 })
 
 blogRouter.get('/:id', async (request, response) => {

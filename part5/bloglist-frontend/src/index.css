@@ -1,3 +1,5 @@
+p {margin-top:0;margin-bottom: 8px;}
+
 .form-field {margin-bottom:8px;}
 .form-field label {margin-right: 4px;}
 
@@ -13,4 +15,6 @@
 .info {background-color: #f3f3f3;border:2px solid green;}
 .error {background-color: #f3f3f3;border:2px solid red;}
 
-.notification.blank {opacity: 0;}
+.notification.blank {display:none;}
+
+.togglable-wrapper {margin-bottom: 2rem;}
