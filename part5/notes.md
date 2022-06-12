@@ -180,4 +180,235 @@ Togglable.displayName = 'Togglable'
     'ecmaVersion': 'latest',
     'sourceType': 'module'
   },
+
+  'rules': {
+    'react/prop-types': 0,
+    'react/react-in-jsx-scope': 'off'
+  }
 ```
+
+<br>
+
+## **Testing React Apps**
+Packages to use
+* Jest
+* react-testing-library (renders components for testing)
+  * ```javascript
+    npm install --save-dev @testing-library/react @testing-library/jest-dom
+    ```
+* jest-dom (installed in line above) adds some Jest-related helper methods
+
+### **Rendering the component for tests**
+imports for *src/components/Note.test.js*
+```javascript
+import React from 'react'
+import '@testing-library/jest-dom/extend-expect'
+import { render, screen } from '@testing-library/react'
+import Note from './Note'
+```
+
+render a component
+```javascript
+render(<Note note={note} />)
+```
+
+access the rendered component with the object screen
+```javascript
+const element = screen.getByText('Component testing is done with        react-testing-library')
+expect(element).toBeDefined()
+```
+
+### **Running tests**
+Create-react-app is set to run tests in **watch mode** by default which means the ```npm test``` command will not exit after finishing and instead wait for changes
+
+How can I run tests "normally"
+```bash
+CI=true npm test
+```
+
+### **Searching for content in a component**
+Can use ```querySelector``` on the ```{container}``` object returned by ```render```
+```javascript
+const { container } = render(<Note note={note} />)
+
+const div = container.querySelector('.note')
+expect(div).toHaveTextContent(
+  'Component testing is done with react-testing-library'
+)
+```
+
+### **Debugging tests**
+Prints out the HTML of a component to terminal
+```javascript
+import { render, screen } from '@testing-library/react'
+...
+screen.debug()
+```
+vvv
+```bash
+console.log
+  <body>
+    <div>
+      <li
+        class="note"
+      >
+        Component testing is done with react-testing-library
+        <button>
+          make not important
+        </button>
+      </li>
+    </div>
+  </body>
+```
+
+Printing a specific element is possible too
+```javascript
+const element = screen.getByText('Component testing is done with react-testing-library')
+
+screen.debug(element)
+```
+
+### **Clicking buttons in tests**
+What is the library that helps test user input?
+```user-event```
+```bash
+npm install --save-dev @testing-library/user-event
+```
+
+#### ***Testing functionality in practice***
+```javascript
+import React from 'react'
+import '@testing-library/jest-dom/extend-expect'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import Note from './Note'
+
+// ...
+
+test('clicking the button calls event handler once', async () => {
+  const note = {
+    content: 'Component testing is done with react-testing-library',
+    important: true
+  }
+
+  // event handler
+  const mockHandler = jest.fn()
+
+  render(
+    <Note note={note} toggleImportance={mockHandler} />
+  )
+
+  // "session" is started
+  const user = userEvent.setup()
+  const button = screen.getByText('make not important')
+  await user.click(button)
+
+  // All mock functions have this special ".mock" property where data about the function is kept (how it was called, what it returns, etc.)
+  expect(mockHandler.mock.calls).toHaveLength(1)
+})
+```
+
+### **Testing the forms**
+Simulating text input with ```userEvent```
+```javascript
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import NoteForm from './NoteForm'
+import userEvent from '@testing-library/user-event'
+
+test('<NoteForm /> updates parent state and calls onSubmit', async () => {
+  const createNote = jest.fn()
+  const user = userEvent.setup()
+
+  render(<NoteForm createNote={createNote} />)
+
+  // Gets access of the input field with getByRole
+  const input = screen.getByRole('textbox')
+  const sendButton = screen.getByText('save')
+
+  await user.type(input, 'testing a form...' )
+  await user.click(sendButton)
+
+  expect(createNote.mock.calls).toHaveLength(1)
+  expect(createNote.mock.calls[0][0].content).toBe('testing a form...' )
+})
+```
+
+### **About finding the elements**
+If there are multiple text inputs in the form, there are a few different ways to extract it into a variable
+```javascript
+const inputs = screen.getAllByRole('textbox')
+
+await user.type(inputs[0], 'testing a form...' )
+
+-----
+
+const input = screen.getByPlaceholderText('write here note content')
+
+-----
+
+const input = container.querySelector('#note-input')
+```
+
+Important: ```getByText``` looks for an element with the **same exact** text as is given  
+  
+To find an element that *contains* text we can
+```javascript
+// Add 'exact' parameter
+const element = screen.getByText(
+'Does not work anymore :(', { exact: false }
+)
+```
+```javascript
+// findByText (Returns a PROMISE)
+const element = await screen.findByText('Does not work anymore :(')
+```
+```javascript
+// queryByText (Doesn't raise an exception if the element is not found)
+// Can be used to make sure something is NOT RENDERED to the component
+test('does not render this', () => {
+  const note = {
+    content: 'This is a reminder',
+    important: true
+  }
+
+  render(<Note note={note} />)
+
+  const element = screen.queryByText('do not want this thing to be rendered')
+  expect(element).toBeNull()
+})
+```
+
+### **Test coverage**
+Integrated coverage reported built into Jest that returns a report
+```bash
+CI=true npm test -- --coverage
+```
+
+
+### **Learned during 5.13-5.16 exercises**
+* Add 'globals' to .eslintrc.js to permit use of 'undefined' variables (Jest functions)
+* Coding convention for Functions and Variables use camelCasing
+* Mimick (mock) a component's event handler(s) with ```jest.fn()```
+  * ```const mockHandler = jest.fn()```
+* Instantiate container and other local variables in ```beforeEach```
+  * ```container = render(<Blog user={user} blog={blog} updateBlog={mockUpdateHandler} />).container```
+
+
+### **Frontend integration tests**
+Since the backend is fairly simple, we only wrote **Integration tests** to test its logic and connected the database through the backend API in Part 4
+
+So far all the tests in this part have been unit tests for the frontend to validate the correct functioning of individual components
+
+
+### **Snapshot testing**
+Offered by Jest and does not need developers to define the tests themselves  
+
+Tests are validated by comparing the HTML code before and after it has changed
+* Developer defines what changes are desired/undesired
+
+
+<br>
+
+## **End to end testing**

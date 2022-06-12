@@ -47,5 +47,12 @@ module.exports = {
     "react": {
       "version": "detect"
     }
+  },
+  "globals": {
+    "test": true,
+    "expect":true,
+    "describe": true,
+    "beforeEach": true,
+    "jest": true
   }
 }

@@ -57,9 +57,9 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
       </button>
       {infoVisible ?
         <>
-          <p>{blog.url}</p>
-          <p>{blog.likes} <button onClick={handleLikeButton}>like</button></p>
-          <p>{blog.author}</p>
+          <p className='blog-url'>{blog.url}</p>
+          <p className='blog-likes'>{blog.likes} <button onClick={handleLikeButton}>like</button></p>
+          <p className='blog-author'>{blog.author}</p>
           {isOwner ?
             <button onClick={handleRemoveButton}>remove</button>
             :
