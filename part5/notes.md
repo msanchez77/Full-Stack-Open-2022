@@ -412,3 +412,287 @@ Tests are validated by comparing the HTML code before and after it has changed
 <br>
 
 ## **End to end testing**
+So far...
+* Backend: **Integration testing** on the whole backend API
+* Frontend: **Unit tests** on components
+
+Now...
+* Backend + Frontend: **End to End tests**
+
+E2E testing
+* Browser
+  * Headless browsers are browsers with no GUI
+* Testing library
+  * Selenium - Can be used with almost any browser
+  * Cypress
+* Very useful but with that, they are more challenging than unit/integration testing and can be quite slow & flaky (tests might pass & fail even when code doesn't change)
+
+### **Cypress**
+Has become one of the most popular recently
+
+Install (frontend)
+```bash
+npm install --save-dev cypress
+```
+Script
+```javascript
+"cypress:open": "cypress open"
+```
+
+Cypress tests can be in the frontend OR backend repo (even in its own)
+
+The system being tested must be running (unlike backend integration tests)
+
+Script (backend)
+```javascript
+"start:test": "cross-env NODE_ENV=test node index.js"
+```
+
+Once both backend and frontend are running we can start Cypress
+```javascript
+npm run cypress:open
+```
+
+Structure of Cypress tests is similar to Jest
+* *describe* blocks - group different test cases
+* *it* method - defines test cases 
+  * ```test('log in', () => {...})``` in Jest
+* Cypress recommends arrow function declarations **NOT** be used and to opt for ```function() {...}```
+
+***!!! Confused on Cypress start up***
+* Integration directory isn't made
+* New app? (doesn't look the same as notes)
+* How to start frontend/backend before starting Cypress
+
+* I installed Cypress 10.1, the notes use Cypress 9.6
+  * Integration directory is made
+  * Start backend ```$ npm run start:test```
+  * Start frontend ```$ npm start```
+  * Start Cypress (from frontend) ```$ npm run cypress:open```
+
+#### **Cypress commands**
+* describe blocks: group different test cases (like Jest)
+* visit: opens the web address given as a parameter
+* contains: searches for the string it received as a parameter from the page
+* Example
+```javascript
+describe('Note app', function() {
+  it('front page can be opened', function() {
+    cy.visit('http://localhost:3000')
+    cy.contains('Notes')
+    cy.contains('Note app, Department of Computer Science, University of Helsinki 2022')
+  })
+})
+```
+
+### **Writing to a form**
+Clicking a button can be chained 
+* ```.contains(...).click()```
+
+Selecting an element by CSS selector
+* ```cy.get('input:first')```
+
+Typing into a field
+* ```cy.get('input:first').type('matthes3')```
+
+Making HTTP request
+* ```cy.request('POST', 'http://localhost:3001/api/testing/reset')```
+
+### **Some things to note**
+Give elements that have duplicate content CSS ID/Classes to select them more specifically
+
+ESLint will throw a ```cy``` is not defined so we can install a dev dependency to ignore this
+```gitbash
+npm install eslint-plugin-cypress --save-dev
+```
+.eslintrc.js config
+```js
+module.exports = {
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jest/globals": true,
+        "cypress/globals": true
+    },
+    ...
+    "plugins": [
+      "react", "jest", "cypress"
+    ],
+}
+```
+
+### **Testing new note form**
+Cypress runs tests in the order they are in the code
+
+Each test starts from zero as far as the browser is concerned
+  
+### **Controlling the state of the database**
+**Goal**: Have the database be the same each time we run tests to make the results reliable and easily repeatable  
+**Challenge**: E2E tests do NOT have access to the database  
+**Solution**: Create API endpoint to the backend for the test (/reset)
+
+New router in /controllers (backend repo)
+```javascript
+const testingRouter = require('express').Router()
+const Note = require('../models/note')
+const User = require('../models/user')
+
+testingRouter.post('/reset', async (request, response) => {
+  await Note.deleteMany({})
+  await User.deleteMany({})
+
+  response.status(204).end()
+})
+
+module.exports = testingRouter
+```
+
+It is a good idea to only start up that endpoint in 'test' mode
+```javascript
+// ...
+
+app.use('/api/login', loginRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/notes', notesRouter)
+
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing')
+  app.use('/api/testing', testingRouter)
+}
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
+
+module.exports = app
+```
+
+Remember to start the app in 'test' mode
+```javascript
+npm run start:test
+```
+
+### **Failed login test**
+When you want to focus on one test we can use ```it.only``` to only run that required test
+
+We have been using ```.contains()``` to check for text content
+* ```cy.get('.error').should('contain', ...)``` can be used to test for more diverse content
+
+Cypress assertions  
+https://docs.cypress.io/guides/references/assertions#Common-Assertions
+
+Cypress testing CSS styles
+```javascript
+it('login fails with wrong password', function() {
+  // ...
+
+  cy.get('.error')
+    .should('contain', 'wrong credentials')
+    .and('have.css', 'color', 'rgb(255, 0, 0)')
+    .and('have.css', 'border-style', 'solid')
+})
+```
+* Cypress requires colors to be given as **rgb**
+* Since all tests are for the same component, we can chain the tests
+
+!!! Testing CSS properties on FireFox may behave differently
+* Linked doc explains that testing ```border-style``` should be broken down to ```border-top-style, border-right-style, ... ```
+
+### **Bypassing the UI**
+Cypress recommends bypassing the UI (form) for logging in and instead prefers an HTTP request to the backend to login
+* In our app we save details to the localStorage and Cypress can handle this
+```javascript
+describe('when logged in', function() {
+  beforeEach(function() {
+    cy.request('POST', 'http://localhost:3001/api/login', {
+      username: 'mluukkai', password: 'salainen'
+    }).then(response => {
+      localStorage.setItem('loggedNoteappUser', JSON.stringify(response.body))
+      cy.visit('http://localhost:3000')
+    })
+  })
+```
+
+Cypress offers **Custom Commands** to make code reusable
+* Declared in cypress/support/commands.js
+```javascript
+Cypress.Commands.add('login', ({ username, password }) => {
+  cy.request('POST', 'http://localhost:3001/api/login', {
+    username, password
+  }).then(({ body }) => {
+    localStorage.setItem('loggedNoteappUser', JSON.stringify(body))
+    cy.visit('http://localhost:3000')
+  })
+})
+```
+which then means we can use in our test files
+```javascript
+describe('when logged in', function() {
+  beforeEach(function() {
+    cy.login({ username: 'mluukkai', password: 'salainen' })
+  })
+```
+
+createNote Custom Command
+```javascript
+Cypress.Commands.add('createNote', ({ content, important }) => {
+  cy.request({
+    url: 'http://localhost:3001/api/notes',
+    method: 'POST',
+    body: { content, important },
+    headers: {
+      'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedNoteappUser')).token}`
+    }
+  })
+
+  cy.visit('http://localhost:3000')
+})
+```
+
+### **How Cypress .contains() works**
+Chaining ```.contains()``` will make it so the second ```.contains()``` call will **continue from within** the component found by the first call
+* In the event that the HTML for a note is
+* ```js
+  <li className='note'>
+    // test works with no <span>
+    <span>{note.content}</span>
+    <button onClick={toggleImportance}>{label}</button>
+  </li>
+  ```
+* Chaining ```.contains()``` will break the test because there is no button *within* the span
+  * We can fix this with the ```parent``` command and ```find``` (```get``` would search the whole page, so ```find``` is the correct command here)
+  ```javascript
+  it('one of those can be made important', function () {
+    cy.contains('second note').parent().find('button').click()
+    cy.contains('second note').parent().find('button')
+      .should('contain', 'make not important')
+  })
+  ```
+  repeated code above can be cleaned up with ```as``` command
+  ```javascript
+  it('one of those can be made important', function () {
+    cy.contains('second note').parent().find('button').as('theButton')
+    cy.get('@theButton').click()
+    cy.get('@theButton').should('contain', 'make not important')
+  })
+  ```
+
+When coding tests with Cypress, check the test runner to make sure the right components are being selected
+
+### **Running and debugging the tests**
+Cypress tests **cannot** run normal JavaScript code
+
+Cypress commands are like promises so to access return values we use ```then```
+```javascript
+it('then example', function() {
+  cy.get('button').then( buttons => {
+    console.log('number of buttons', buttons.length)
+    cy.wrap(buttons[0]).click()
+  })
+})
+```
+
+Set up Cypress debugger (only starts if Cypress test runner's dev console is open) 
+https://docs.cypress.io/api/commands/debug
+
+Intro to Cypress  
+https://docs.cypress.io/guides/core-concepts/introduction-to-cypress#Cypress-is-Not-Like-jQuery

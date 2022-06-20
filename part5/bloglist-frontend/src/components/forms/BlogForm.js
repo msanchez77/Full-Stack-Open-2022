@@ -51,7 +51,7 @@ const BlogForm = ({ createBlog }) => {
             className='url-input'
           />
         </div>
-        <button type="submit">create</button>
+        <button type="submit" className='create-blog-btn'>create</button>
       </form>
     </div>
   )

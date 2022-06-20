@@ -11,7 +11,8 @@
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
     "lint": "eslint .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "author": "Matt Sanchez",
   "license": "ISC",
@@ -31,8 +32,5 @@
     "jest": "^28.1.0",
     "nodemon": "^2.0.15",
     "supertest": "^6.2.3"
-  },
-  "jest": {
-    "testEnvironment": "node"
   }
 }
