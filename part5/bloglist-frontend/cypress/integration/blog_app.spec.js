@@ -5,13 +5,22 @@ describe('Blog app', function() {
     password: 'test'
   }
 
+	let testUser2 = {
+    name: 'Other User',
+    username: 'otheruser',
+    password: 'other'
+  }
+
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
 
     // create here a user to backend
     cy.request('POST', 'http://localhost:3003/api/users', testUser)
       .then(response => {
-        cy.visit('http://localhost:3000')
+        cy.request('POST', 'http://localhost:3003/api/users', testUser2)
+					.then(response => {
+						cy.visit('http://localhost:3000')
+					})
       })
   })
 
@@ -73,5 +82,92 @@ describe('Blog app', function() {
 
       cy.get('.blog-info-wrapper').contains('Cypress Test')
     })
+
+		it('A blog can be liked', function() {
+			const token = Cypress.env('token')
+			const authorization = `bearer ${token}`
+
+			const params = {
+				title: "Test Liking Blog",
+				author: "Test User",
+				url: "http:localhost:3333",
+				likes: 0,
+				token: authorization
+			}
+
+			cy.addBlog(params)
+
+			cy.contains('view').click()
+			cy.get('.blog-likes').contains('0')
+			cy.get('.blog-likes button').click()
+			cy.get('.blog-likes').contains('1')
+		})
+
+		it('Remove button is there for user who added it; Log out and in with new user --> No remove button', function() {
+			const token = Cypress.env('token')
+			const authorization = `bearer ${token}`
+			cy.addTestBlog({authorization})
+
+			cy.contains('Dummy')
+			cy.get('.blog-view-btn').click()
+			cy.get('.blog-remove-btn')
+
+			cy.contains('logout').click()
+			cy.login(testUser2)
+			cy.get('.blog-view-btn').click()
+			cy.get('.blog-remove-btn').should('not.exist')
+		})
+
+		it.only('Check blogs are ordered by likes', function() {
+			const token = Cypress.env('token')
+			const authorization = `bearer ${token}`
+			
+			let params = {
+				title: "First",
+				author: "Test User",
+				url: "http:localhost:3333",
+				likes: 0,
+				token: authorization
+			}
+
+			cy.addBlog(params)
+
+			params = {
+				title: "Second",
+				author: "Test User",
+				url: "http:localhost:3333",
+				likes: 2,
+				token: authorization
+			}
+
+			cy.addBlog(params)
+
+			params = {
+				title: "Third",
+				author: "Test User",
+				url: "http:localhost:3333",
+				likes: 4,
+				token: authorization
+			}
+
+			cy.addBlog(params)
+
+			cy.get('.blog-info-wrapper').eq(0).should('contain', 'Third')
+			cy.get('.blog-info-wrapper').eq(1).should('contain', 'Second')
+			cy.get('.blog-info-wrapper').eq(2).should('contain', 'First')
+
+			cy.get('.blog-view-btn').eq(1).click()
+			let second_like_btn = cy.get('.blog-info-wrapper').eq(1).get('.blog-likes button')
+			second_like_btn.click()
+			cy.get('.blog-likes').contains('3')
+			second_like_btn = cy.get('.blog-info-wrapper').eq(1).get('.blog-likes button')
+			second_like_btn.click()
+			cy.get('.blog-likes').contains('4')
+			second_like_btn = cy.get('.blog-info-wrapper').eq(1).get('.blog-likes button')
+			second_like_btn.click()
+			cy.get('.blog-likes').contains('5')
+
+			cy.get('.blog-info-wrapper').eq(0).should('contain', 'Second')
+		})
   })
 })

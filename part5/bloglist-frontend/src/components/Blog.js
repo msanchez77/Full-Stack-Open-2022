@@ -52,7 +52,7 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
       <p style={inlineParagraph}>
         {blog.title}
       </p>
-      <button onClick={handleBlogInfo}>
+      <button className='blog-view-btn' onClick={handleBlogInfo}>
         view
       </button>
       {infoVisible ?
@@ -61,7 +61,7 @@ const Blog = ({ user, blog, updateBlog, removeBlog }) => {
           <p className='blog-likes'>{blog.likes} <button onClick={handleLikeButton}>like</button></p>
           <p className='blog-author'>{blog.author}</p>
           {isOwner ?
-            <button onClick={handleRemoveButton}>remove</button>
+            <button className='blog-remove-btn' onClick={handleRemoveButton}>remove</button>
             :
             <></>
           }

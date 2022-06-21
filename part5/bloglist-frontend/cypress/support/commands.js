@@ -29,6 +29,34 @@ Cypress.Commands.add('login', ({ username, password }) => {
     username, password
   }).then(({ body }) => {
     localStorage.setItem('loggedBlogAppUser', JSON.stringify(body))
-    cy.visit('http://localhost:3000')
+    Cypress.env('token', body.token)
+		cy.visit('http://localhost:3000')
   })
+})
+
+Cypress.Commands.add('addBlog', ({title, author, url, likes=0, token}) => {
+	cy.request({
+		method: 'POST',
+		url: 'http://localhost:3003/api/blogs',
+		body: {
+			title, author, url, likes
+		},
+		headers: {"Authorization": token}
+	})
+
+	cy.visit('http://localhost:3000')
+})
+
+Cypress.Commands.add('addTestBlog', ({authorization}) => {
+	cy.request({
+		method: 'POST',
+		url: 'http://localhost:3003/api/blogs',
+		body: {
+			title: 'Dummy Blog',
+			author: 'Dum My'
+		},
+		headers: {"Authorization": authorization}
+	})
+
+	cy.visit('http://localhost:3000')
 })

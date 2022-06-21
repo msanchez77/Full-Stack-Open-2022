@@ -696,3 +696,20 @@ https://docs.cypress.io/api/commands/debug
 
 Intro to Cypress  
 https://docs.cypress.io/guides/core-concepts/introduction-to-cypress#Cypress-is-Not-Like-jQuery
+
+
+### **Learned during Part 5d Exercises**
+* Cypress environment variables
+	* ```Cypress.env('token', body.token)```
+* Cypress set headers
+	* ```js
+		cy.request({
+			method: 'POST',
+			url: 'http://localhost:3003/api/blogs',
+			body: {
+				title, author, url, likes
+			},
+			headers: {"Authorization": token}
+		})
+		```
+* 
