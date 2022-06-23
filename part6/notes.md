@@ -291,3 +291,134 @@ Here we continue separating modules into their own components
     }
     ```
 
+<br>
+
+## **Many Reducers**
+### **Store with complex state**
+Now we will filter the notes with a radio button and the filter selected will be stored in the store in addition to the notes
+```javascript
+// Store visualization
+{
+  notes: [
+    { content: 'reducer defines how redux store works', important: true, id: 1},
+    { content: 'state of store can contain any data', important: false, id: 2}
+  ],
+  filter: 'IMPORTANT'
+}
+```
+
+### **Combined reducers**
+We *could* add another reducer to the one we currently have, but it would be wiser to define a new separate reducer (we combine them later for the store to use)
+```javascript
+const reducer = combineReducers({
+  notes: noteReducer,
+  filter: filterReducer
+})
+```
+
+Small, but important detail
+* Every *action* gets handler in *every* part of the **combined reducer**
+  * A console.log at the beginning of multiple reducers will show that action be called multiple times even if only one reducer is interested in that action
+  * This is helpful for when multiple reducers are interested in the same action and must update their state based on it
+
+
+### **Finishing the filters**
+With the store now holding two reducers, ```useSelector``` needs to pull the relevant information
+```javascript
+const notes = useSelector(state => state.notes)
+```
+
+And with filter information and destructuring
+```javascript
+const notes = useSelector(({ filter, notes }) => {
+  if ( filter === 'ALL' ) {
+    return notes
+  }
+  return filter  === 'IMPORTANT' 
+    ? notes.filter(note => note.important)
+    : notes.filter(note => !note.important)
+})
+```
+
+### **Redux Toolkit**
+Library that solves common Redux-related problems with state management and configuration
+```
+npm install @reduxjs@toolkit
+```
+
+1) ```createStore``` is replaced by Redux Toolkit's ```configureStore```
+```javascript
+import { configureStore } from '@reduxjs/toolkit'
+
+const store = configureStore({
+  reducer: {
+    notes: noteReducer,
+    filter: filterReducer
+  }
+})
+```
+
+2) Reducer and related action creators are replaced with Redux Toolkit's ```createSlice``` function
+```javascript
+import { createSlice } from '@reduxjs/toolkit'
+
+const noteSlice = createSlice({
+  name: 'notes',
+  initialState,
+  reducers: {
+    createNote(state, action) {
+      const content = action.payload
+      state.push({
+        content,
+        important: false,
+        id: generateId(),
+      })
+    },
+    toggleImportanceOf(state, action) {
+      const id = action.payload
+      const noteToChange = state.find(n => n.id === id)
+      const changedNote = { 
+        ...noteToChange, 
+        important: !noteToChange.important 
+      }
+      return state.map(note =>
+        note.id !== id ? note : changedNote 
+      )     
+    }
+  },
+})
+```
+* **name**: defines the prefix used in the action's type values
+  * ```notes/createNote```
+* **initialState**
+* **reducers**: takes the reducers as objects
+  * ```action.payload``` holds the argument provided to it
+  * ```
+    dispatch(createNote('Redux Toolkit is awesome!'))
+    ```
+    correlates with
+    ```
+    dispatch({ type: 'notes/createNote', payload: 'Redux Toolkit is awesome!' })
+    ```
+* Notice how ```createNote``` appears to mutate the state with ```push```
+  * Redux Toolkit utilizes a library, Immer, which makes it possible to mutate the state
+  * State can still be changed by not mutating it like in ```toggleImportanceOf``` where it returns the new state
+  * It is helpful to be able to "mutate" the state with more complex states
+* Finally, the reducer and its action creators can be
+  * ```js
+    // Exported
+    const noteSlice = createSlice(/* ... */)
+
+    export const { createNote, toggleImportanceOf } = noteSlice.actions
+    export default noteSlice.reducer
+    ```
+  * ```js
+    // Imported
+    import noteReducer, { createNote, toggleImportanceOf } from './reducers/noteReducer'
+    ``` 
+
+### **Redux DevTools**
+Chrome addone offering useful development tools for Redux
+* Creating a store with ```configureStore``` will make it so no additional configuration is needed to get Redux DevTools working
+* Can inspect how dispatching certain actions changes the state
+* Can dispatch actions through DevTools
