@@ -37,16 +37,22 @@ const anecdoteSlice = createSlice({
   reducers: {
     createAnecdote(state, action) {
       const content = action.payload
-      state.push({
-        content,
-        id: getId(),
-        votes: 0
-      })
+      state.push(asObject(content))
     },
     voteAnecdote(state, action) {
       const id = action.payload
       
-      return {content:'adsfsa', id:4341, votes: 3}
+      const toChange = state.find(an => an.id === id)
+      const changed = {
+        ...toChange,
+        votes: toChange.votes + 1
+      }
+
+      const toReturn = state.map(anecdote => 
+        anecdote.id !== id ? anecdote : changed  
+      )
+
+      return toReturn.sort(compareVotes)
     }
   }
 })
