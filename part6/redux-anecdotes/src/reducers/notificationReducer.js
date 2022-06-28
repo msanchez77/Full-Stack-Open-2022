@@ -6,16 +6,11 @@ const notificationSlice = createSlice({
   name: 'notification',
   initialState,
   reducers: {
-    voteAnecdote(state, action) {
-      console.log("Notif reducer")
-      const anecdote = action.payload
-      state = anecdote
-    },
-    removeNotif(state, action) {
-      state = ''
-    }
-  }
+    setNotificationVote(state,action) {
+			return action.payload
+		}
+	}
 })
 
-export const { voteAnecdote, removeNotif } = notificationSlice.actions
+export const { setNotificationVote, setNotificationAnecdote, removeNotif } = notificationSlice.actions
 export default notificationSlice.reducer

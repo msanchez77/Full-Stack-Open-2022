@@ -418,7 +418,7 @@ const noteSlice = createSlice({
     ``` 
 
 ### **Redux DevTools**
-Chrome addone offering useful development tools for Redux
+Chrome addon offering useful development tools for Redux
 * Creating a store with ```configureStore``` will make it so no additional configuration is needed to get Redux DevTools working
 * Can inspect how dispatching certain actions changes the state
 * Can dispatch actions through DevTools
