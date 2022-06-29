@@ -456,3 +456,101 @@ Chrome addon offering useful development tools for Redux
     }
     ```
 * All objects passed to a **reducer function** can be accessed through ```action.payload.<>``` or ```action.payload``` if only one is passed
+
+<br>
+
+## **Communicating with server in a redux application**
+Using ```json-server``` and ```axios``` for a quick server to test with
+
+Add next actions for populating the states from the server
+```js
+appendNote(state, action) {
+	state.push(action.payload)
+},
+setNotes(state, action) {
+	return action.payload
+}
+```
+
+```useEffect``` and ```dispatch``` in App.js to initialize
+```js
+const dispatch = useDispatch()
+useEffect(() => {
+	noteService
+		.getAll().then(notes => dispatch(setNotes(notes)))
+}, [])
+```
+
+Can disable eslint warnings with a comment
+```js
+useEffect(() => {
+	...
+},[]) // eslint-disable-line react-hooks/exhaustive-deps  
+```
+
+Before dispatching the action, we now send the POST request to the server in   
+```/component/NewNote.js``` action creator
+```js
+  const addNote = async (event) => {
+    event.preventDefault()
+    const content = event.target.note.value
+    event.target.note.value = ''
+    const newNote = await noteService.createNew(content)
+    dispatch(createNote(newNote))
+  }
+```
+
+### **Asynchronous actions and redux thunk**
+Next we will attempt to move the communication with the server away from inside the functions of the components
+* This is a good way to separate responsibilities
+* Component can then just call the appropriate *action creator*
+* These ***async actions*** can be done with the help of the ```redux-thunk``` library
+	* No extra configuration needed when the Redux store is created with ```configureStore```
+
+#### **Redux Thunk**
+* We will implement action creators that return a *function* instead of an *object*
+  * **Asynchronous action creators**
+
+General rule of asynchronous action creators
+1. Asynchronous operation
+2. Dispatch action to change store's state
+```js
+export const initializeNotes = () => {
+  return async dispatch => {
+    const notes = await noteService.getAll()
+    dispatch(setNotes(notes))
+  }
+}
+```
+
+Now ```App.js``` will just dispatch the asynchronous action creator (which returns a function)
+```js
+useEffect(() => {
+  dispatch(initializeNotes()) 
+},[dispatch]) 
+```
+
+***
+Redux Toolkit offers several tools to simplify **asynchronous state management**
+* ```createAsyncThunk``` function
+* RTK Query API
+***
+
+Components like ```NewNotes.js``` now just need to ```dispatch``` the ```asynchronous action creator```
+```js
+const NewNote = () => {
+  const dispatch = useDispatch()
+  
+  const addNote = async (event) => {
+    event.preventDefault()
+    const content = event.target.note.value
+    event.target.note.value = ''
+		
+    dispatch(createNote(content))
+  }
+
+	return (
+		...
+	)
+}
+```

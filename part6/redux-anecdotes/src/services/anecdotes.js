@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { useSelector } from 'react-redux'
+
 const baseUrl = 'http://localhost:3001/anecdotes'
 
 const getAll = async () => {
@@ -13,7 +15,13 @@ const createNew = async (content) => {
   return response.data
 }
 
+const registerVote = async (updatedAnecdote) => {
+	const response = await axios.put(`${baseUrl}/${updatedAnecdote.id}`, updatedAnecdote)
+	return response.data
+}
+
 export default {
   getAll,
   createNew,
+	registerVote
 }
