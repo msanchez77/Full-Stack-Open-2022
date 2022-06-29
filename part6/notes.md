@@ -422,3 +422,37 @@ Chrome addon offering useful development tools for Redux
 * Creating a store with ```configureStore``` will make it so no additional configuration is needed to get Redux DevTools working
 * Can inspect how dispatching certain actions changes the state
 * Can dispatch actions through DevTools
+
+### **Learned during part 6b exercises**
+* Simply importing ```index.css``` to ```index.js```
+  * ```import './index.css'```
+* Multiple calls to ```dispatch``` in an *action creator* function
+  * ```js
+    dispatch(createAnecdote(content))
+    dispatch(setNotificationAnecdote(content))
+    setTimeout(() => 
+      dispatch(clearNotification())
+    , 5000)
+    ```
+* A named input can be targeted
+  * ```<input name='anecdote'/>```
+  * ```const content = event.target.anecdote.value```
+* It seems that generally Components will ```dispatch``` actions
+* Any component can access other states in the store
+  * ```js
+    const AnecdoteList = () => {
+      const dispatch = useDispatch()
+      const anecdotes = useSelector(state => {
+        const unFiltered = state.anecdotes
+        const filteredList = unFiltered.filter(a => {
+          const cased = a.content.toLowerCase()
+          return cased.includes(state.filter)
+        })
+
+        return filteredList
+      })
+
+      ...
+    }
+    ```
+* All objects passed to a **reducer function** can be accessed through ```action.payload.<>``` or ```action.payload``` if only one is passed
