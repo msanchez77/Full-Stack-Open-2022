@@ -3,7 +3,7 @@ import noteService from '../services/notes'
 
 const noteSlice = createSlice({
   name: 'notes',
-  initialState,
+  initialState: [],
   reducers: {
     toggleImportanceOf(state, action) {
       const id = action.payload

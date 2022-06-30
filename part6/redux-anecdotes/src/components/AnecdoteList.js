@@ -33,7 +33,7 @@ const AnecdoteList = () => {
 	// Action Creator to dispatch multiple actions
 	const voteDispatch = ({id, content}) => {
 		dispatch(voteAnecdote(id))
-		dispatch(setNotification(`you voted '${content}'`, 10))
+		dispatch(setNotification(`you voted '${content}'`, 5))
 	}
 
   return (
