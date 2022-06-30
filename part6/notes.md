@@ -554,3 +554,151 @@ const NewNote = () => {
 	)
 }
 ```
+
+<br/>
+
+## **connect**
+So far we have utilized a new creation of the ```redux-store``` with the help of the **hook-api** (```useSelector``` and ```useDispatch```) from ```react-redux```
+
+**In this part we will cover an *older* and *more complicated* way to use redux with the ```connect``` function provided by ```react-redux```**
+(Good to know, but you should lean more towards the ```hook-api``` if possible)
+
+### **Using the connect-function to share the redux store to components**
+Import/Export ```connect```ed component
+```javascript
+import { connect } from 'react-redux'
+
+...
+
+const ConnectedNotes = connect()(Notes)
+export default ConnectedNotes
+```
+
+The Redux Store's state is **mapped** to the Component's props with ```mapStateToProps``` function and then passed to the connect component's first argument (second will be ```dispatch```)
+```javascript
+const mapStateToProps = (state) => {
+  return {
+    notes: state.notes,
+    filter: state.filter,
+  }
+}
+
+const ConnectedNotes = connect(mapStateToProps)(Notes)
+```
+
+The *notes* and *filter* state can now be accessed with
+```javascript
+props.filter
+props.notes
+```
+
+The ```mapStateToProps``` function can use the Store's states and only set the props necessary for the corresponding component
+```javascript
+const mapStateToProps = (state) => {
+  if ( state.filter === 'ALL' ) {
+    return {
+      notes: state.notes
+    }
+  }
+  return {
+    notes: (state.filter  === 'IMPORTANT' 
+      ? state.notes.filter(note => note.important)
+      : state.notes.filter(note => !note.important)
+    )
+  }
+}
+```
+* Only ```props.notes``` is set now since <Notes /> doesn't need the filter value for its markup
+
+
+### **mapDispatchToProps**
+Second parameter to the ```connect``` function will be the ```mapDispatchToProps``` function
+* A group of *action creator* functions mapped to the component's props
+
+```javascript
+const mapDispatchToProps = {
+  toggleImportanceOf,
+}
+
+const ConnectedNotes = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Notes)
+```
+
+Can now be accessed as
+```props.toggleImportanceOf(...)```
+
+
+### *Visualization of a connected component*
+<img src="./notes-md-images/connect-function-viz.png" alt="drawing" width="600"/>
+
+
+If a connected component does not need to access the state's store, we can pass *null* as the first parameter to ```connect```
+```javascript
+export default connect(
+  null, 
+  { createNote }
+)(NewNote)
+```
+
+### **Referencing action creators passed as props**
+There will be 2 versions of an action creator in the component
+1. The imported function
+   * ```import { createNote } from '../reducers/noteReducer'```
+   *  ```js
+      export default connect(
+        null, 
+        { createNote }
+      )(NewNote)
+      ```
+2. The connected function (*contains the **automatic** dispatch*)
+   * ```props.createNote(content)```
+ 
+
+### **Alternative way of using mapDispatchToProps**
+So far, we have passed the *action creators* (**functions that return redux actions**) to ```mapDispatchToProps``` (required)
+```javascript
+const NewNote = () => {
+  // ...
+}
+
+export default connect(
+  null,
+  { createNote }
+)(NewNote)
+```
+* Remember that ```{createNote}``` is shorthand for the object literal
+```javascript
+{
+  createNote: createNote
+}
+```
+
+**Alternatively** we can pass the following *function* definition to ```connect```
+```javascript
+const mapDispatchToProps = dispatch => {
+  return {
+    createNote: value => {
+      dispatch(createNote(value))
+    },
+  }
+}
+```
+
+```mapDispatchToProps``` is now a function that ```connect``` will invoke by passing it the ```dispatch``` function as its parameter
+
+Return value is an object that defines a **group of functions** that will be passed to the connected component as props
+
+```javascript
+value => {
+  dispatch(createNote(value))
+}
+```
+* This will simply ```dispatch``` the action created with the ```createNote``` action creator
+* Still accessed as ```props.createNote```
+* In most cases, it is sufficient to use the simpler form of ```mapDispatchToProps```
+* In cases where the **dispatched actions** need to **reference the props of the component**, this version will be necessary
+* Creator of redux tutorial [Getting started with Redux](https://egghead.io/courses/fundamentals-of-redux-course-from-dan-abramov-bd5cc867)
+
+
