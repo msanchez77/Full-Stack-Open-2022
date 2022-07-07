@@ -221,3 +221,228 @@ Now the line to match the Notes id would be executed on each browser URL change
 const match = useMatch('/notes/:id')
 ```
 
+<br/>
+
+## **Custom hooks**
+### **Hooks**
+React offers 15 built-in hooks
+* ```useState```
+  * Persistent state as the application runs
+  * Function to update the state (immutable)
+* ```useEffect```
+  * Function to be run either everytime the DOM reloads, or only on the first reload
+* ```useImperativeHandle```
+  * Allows components to provide their functions to other components
+
+Hook-based APIs have started emerging (```react-redux```, ```react-router```)
+* ```useSelector```
+  * Access (redux) store's state objects
+* ```useDispatch```
+  * Dispatches actions given to it
+* ```connect```
+  * Older API from ```react-redux``` that was used before useSelector/useDispatch to connect a store's states and action creator functions to a component
+  * Legacy apps might still use
+* ```useNavigate```
+  * Allows us to code in browser navigation through our App which affects the address bar
+  * Helps with UX such as bookmarking and navigating backwards
+* ```useMatch```
+  * Matches a parameterized route to a variable to access 
+    * Route data
+    * Route params (e.g. /:id)
+
+Hook rules/limitations
+* Can't be called inside loops, conditions or nested functions
+  * Always use at the top level of the React function
+* Can't be called from inside **regular** JS functions
+  * Always call from React **function components** or **custom hooks**
+
+### **Custom hooks**
+React allows us to use custom hooks which primary purpose is to facilitate the reuse of the logic used in components
+
+**Custom hooks must start with ```use``` (e.g. useDispatch, useSelector)**
+
+Custom hook of the simple counter App we worked with in part1
+```javascript
+const useCounter = () => {
+  const [value, setValue] = useState(0)
+
+  const increase = () => {
+    setValue(value + 1)
+  }
+
+  const decrease = () => {
+    setValue(value - 1)
+  }
+
+  const zero = () => {
+    setValue(0)
+  }
+
+  return {
+    value, 
+    increase,
+    decrease,
+    zero
+  }
+}
+```
+* Creates its own state with ```useState```
+* Returns an object containing the value and functions to manipulate it
+
+<br>
+
+useCounter in use
+```javascript
+const App = (props) => {
+  const counter = useCounter()
+
+  return (
+    <div>
+      <div>{counter.value}</div>
+      <button onClick={counter.increase}>
+        plus
+      </button>
+      <button onClick={counter.decrease}>
+        minus
+      </button>      
+      <button onClick={counter.zero}>
+        zero
+      </button>
+    </div>
+  )
+}
+```
+* Custom hooks can be reused in the App
+```javascript
+const App = () => {
+  const left = useCounter()
+  const right = useCounter()
+
+  return (
+    <div>
+      {left.value}
+      <button onClick={left.increase}>
+        left
+      </button>
+      <button onClick={right.increase}>
+        right
+      </button>
+      {right.value}
+    </div>
+  )
+}
+```
+
+So far, we have created forms with the **input** & **onChange** event to be kept in memory as states
+```javascript
+  const [name, setName] = useState('')
+  const [born, setBorn] = useState('')
+  const [height, setHeight] = useState('')
+
+  ...
+
+  <form>
+    name: 
+    <input
+      type='text'
+      value={name}
+      onChange={(event) => setName(event.target.value)} 
+    /> 
+    <br/> 
+    birthdate:
+    <input
+      type='date'
+      value={born}
+      onChange={(event) => setBorn(event.target.value)}
+    />
+    ...
+  </form>
+```
+
+<br>
+
+<span style="font-size:larger;">W</span>ith custom hooks, we can define our own custom ```useField``` hook that will simplify this state management
+```javascript
+const useField = (type) => {
+  const [value, setValue] = useState('')
+
+  const onChange = (event) => {
+    setValue(event.target.value)
+  }
+
+  return {
+    type,
+    value,
+    onChange
+  }
+}
+```
+* Receives the ```type``` as a parameter and defines its own state and onChange handler
+* Returns all of the attributes required by the ```input``` (type, val, onChange)
+
+<span style="font-size:larger;">F</span>rom here we can create a stateful object and pass it to the ```input``` with much fewer lines
+```javascript
+const App = () => {
+  const name = useField('text')
+  // ...
+
+  return (
+    <div>
+      <form>
+        <input
+          type={name.type}
+          value={name.value}
+          onChange={name.onChange} 
+        /> 
+        // ...
+      </form>
+    </div>
+  )
+}
+```
+
+### **Spread attributes**
+<span style="font-size:larger;">S</span>ince we have all the attributes needed by the ```input```, we can utilize the spread syntax to pass them all with the following:
+```<input {...name} />```
+
+Same result
+```javascript
+<Greeting firstName='Arto' lastName='Hellas' />
+
+const person = {
+  firstName: 'Arto',
+  lastName: 'Hellas'
+}
+
+<Greeting {...person} />
+```
+
+<br>
+
+Now we can see the application in a much simpler, reusable, and modular form
+```javascript
+const App = () => {
+  const name = useField('text')
+  const born = useField('date')
+  const height = useField('number')
+
+  return (
+    <div>
+      <form>
+        name: 
+        <input  {...name} /> 
+        <br/> 
+        birthdate:
+        <input {...born} />
+        <br /> 
+        height:
+        <input {...height} />
+      </form>
+      <div>
+        {name.value} {born.value} {height.value}
+      </div>
+    </div>
+  )
+}
+```
+
