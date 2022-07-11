@@ -446,3 +446,33 @@ const App = () => {
 }
 ```
 
+
+### **Learned through 7.4-7.8 exercises**
+* Use an empty dependency arry ([]) for useEffect for **data fetching**
+  * Thousands of requests results from having either of the ```useCountry``` hook's objects (e.g. [notes, persons] or [noteService, personService])
+* Reminder: ```axios``` is the requests library
+  * Chain ```then``` and ```catch``` for requests
+* Using spread operator on a custom hook to attach to an ```<input>``` tag's attributes
+  * Separate the two categories to spread easily
+    * ```javascript
+      return {
+        inputAttr: {
+          type,
+          value,
+          onChange
+        },
+        method: {
+          reset
+        }
+      }
+
+      vvv
+      const info = useField('text')
+
+      <input 
+        {...info.inputAttr}
+      />
+    ``` 
+* Specify a ```<button>``` type attribute 
+  * ```type='submit'``` will trigger the ```<form onSubmit={handleSubmit}>```
+  * ```type='reset'``` will attach to another custom ```onClick```
