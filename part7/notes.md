@@ -476,3 +476,267 @@ const App = () => {
 * Specify a ```<button>``` type attribute 
   * ```type='submit'``` will trigger the ```<form onSubmit={handleSubmit}>```
   * ```type='reset'``` will attach to another custom ```onClick```
+
+
+## **More about styles**
+Two ways of adding styles to our App (so far)
+1. Single CSS file
+2. Inline-styles
+   * ```js
+      const Footer = () => {
+      const footerStyle = {
+        color: 'green',
+        fontStyle: 'italic',
+        fontSize: 16
+      }
+      return (
+        <div style={footerStyle}>
+          ...
+        </div>
+        )
+      }
+      ``` 
+
+### **Ready-made UI libraries**
+Most popular UI framework: **Bootstrap**
+
+Many others have been released recently
+
+Helpful since they offer developers with ready-made themes and "components" like buttons, menus, and tables (not React)
+
+Usually utilized by including the CSS stylesheet and JS script
+
+Some UI frameworks offer React-friendly versions where the "components" have been turned into actual React components
+* **reactstrap**
+* **react-bootstrap**
+
+We will cover and add to our React-router app
+* Bootstrap (react-bootstrap)
+* MaterialUI
+
+### **React Bootstrap**
+```javascript
+npm install react-bootstrap
+```
+
+Load Bootstrap CSS in ```<head>```
+
+```html
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+    crossOrigin="anonymous"
+  />
+  ```
+
+Bootstrap looks for a **container** to render inside of  
+We can add a ```className```: ```"container"``` and this will give the page some side padding
+
+#### **Table**
+Import the ```Table``` bootstrap component  
+```js
+import { Table } from 'react-bootstrap
+```
+
+```javascript
+<Table striped>
+  <tbody>
+    {notes.map(note =>
+      <tr key={note.id}>
+        <td>
+          <Link to={`/notes/${note.id}`}>
+            {note.content}
+          </Link>
+        </td>
+        <td>
+          {note.user}
+        </td>
+      </tr>
+    )}
+  </tbody>
+</Table>
+```
+
+#### **Forms**
+```js
+import { Form } from 'react-bootstrap
+```
+```javascript
+<Form onSubmit={onSubmit}>
+  <Form.Group>
+    <Form.Label>username:</Form.Label>
+    <Form.Control
+      type="text"
+      name="username"
+    />
+    <Form.Label>password:</Form.Label>
+    <Form.Control
+      type="password"
+    />
+    <Button variant="primary" type="submit">
+      login
+    </Button>
+  </Form.Group>
+</Form>
+```
+
+#### **Notification**
+```js
+import { Alert } from 'react-bootstrap
+```
+```javascript
+const [message, setMessage] = useState(null)
+
+return (
+  <div className="container">
+    {(message &&
+      <Alert variant="success">
+        {message}
+      </Alert>
+    )}
+    // ...
+  </div>
+)
+
+```
+
+#### **Navigation structure**
+```js
+import { Navbar, Nav } from 'react-bootstrap
+```
+```javascript
+<Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+  <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+  <Navbar.Collapse id="responsive-navbar-nav">
+    <Nav className="me-auto">
+      <Nav.Link href="#" as="span">
+        <Link style={padding} to="/">home</Link>
+      </Nav.Link>
+      <Nav.Link href="#" as="span">
+        <Link style={padding} to="/notes">notes</Link>
+      </Nav.Link>
+      <Nav.Link href="#" as="span">
+        <Link style={padding} to="/users">users</Link>
+      </Nav.Link>
+      <Nav.Link href="#" as="span">
+        {user
+          ? <em style={padding}>{user} logged in</em>
+          : <Link style={padding} to="/login">login</Link>
+        }
+      </Nav.Link>
+    </Nav>
+  </Navbar.Collapse>
+</Navbar>
+```
+<br>
+
+### **Material UI**
+```javascript
+npm install @mui/material @emotion/react @emotion/styled
+```
+
+```html
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  // ...
+</head>
+```
+
+#### **Container**
+```javascript
+import { Container } from '@mui/material'
+
+const App = () => {
+  // ...
+  return (
+    <Container>
+      // ...
+    </Container>
+  )
+}
+```
+
+#### **Table**
+```javascript
+    <TableContainer component={Paper}>
+      <Table>
+        <TableBody>
+          {notes.map(note => (
+            <TableRow key={note.id}>
+              <TableCell>
+                <Link to={`/notes/${note.id}`}>{note.content}</Link>
+              </TableCell>
+              <TableCell>
+                {note.user}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+```
+
+#### **Form**
+Uses the ```TextField``` and ```Button``` components
+```javascript
+      <form onSubmit={onSubmit}>
+        <div>
+          <TextField label="username" />
+        </div>
+        <div>
+          <TextField label="password" type='password' />
+        </div>
+        <div>
+          <Button variant="contained" color="primary" type="submit">
+            login
+          </Button>
+        </div>
+      </form>
+```
+* Notice how the HTML ```<form>``` element is still used
+
+#### **Notification**
+```javascript
+<div>
+  {(message &&
+    <Alert severity="success">
+      {message}
+    </Alert>
+  )}
+</div>
+```
+* Similar to Bootstrap
+
+#### **Navigation structure**
+```javascript
+<AppBar position="static">
+  <Toolbar>
+    <Button color="inherit" component={Link} to="/">
+      home
+    </Button>
+    <Button color="inherit" component={Link} to="/notes">
+      notes
+    </Button>
+    <Button color="inherit" component={Link} to="/users">
+      users
+    </Button>   
+    {user
+      ? <em>{user} logged in</em>
+      : <Button color="inherit" component={Link} to="/login">
+          login
+        </Button>
+    }                              
+  </Toolbar>
+</AppBar>
+```
+
+### **Styled Components**
+```javascript
+npm install styled-components
+```
+
+<br>
+
+
+## **Webpack**
