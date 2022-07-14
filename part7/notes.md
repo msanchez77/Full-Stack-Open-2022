@@ -732,11 +732,441 @@ Uses the ```TextField``` and ```Button``` components
 ```
 
 ### **Styled Components**
+Library that uses the **tagged template literals** introduced in ES6 to define styles
 ```javascript
 npm install styled-components
 ```
 
+Example
+```javascript
+import styled from 'styled-components'
+
+const Button = styled.button`
+  background: Bisque;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid Chocolate;
+  border-radius: 3px;
+`
+
+const Input = styled.input`
+  margin: 0.25em;
+`
+```
+* Applied to ```button``` and ```input``` elements 
+* Inside of backticks
+* Can then be used as regular elements (now styled)
+```javascript
+const Login = (props) => {
+  // ...
+  return (
+    <div>
+      <h2>login</h2>
+      <form onSubmit={onSubmit}>
+        <div>
+          username:
+          <Input />
+        </div>
+        <div>
+          password:
+          <Input type='password' />
+        </div>
+        <Button type="submit" primary=''>login</Button>
+      </form>
+    </div>
+  )
+}
+```
+
+A growing library that has been found to be a practical way of styling React applications
+
+
 <br>
 
-
 ## **Webpack**
+Webpack is one of the key players in making the process of creating a React app so much simpler  
+
+We will now look under the hood so that we can understand how it is configured and customize it ourselves
+
+### **Bundling**
+Code that is modularized must be bundled for older browsers (```npm run build```)
+* ```index.html``` is the "main" file that loads the bundled JS file with a ```<script>``` tag
+  * Also the CSS file
+* ```index.js``` is considered the entry point for the applications which dictates which code is imported first and so on
+
+
+**Exercise**: Create a suitable webpack configuration for a React app by hand from scratch
+
+
+1) Create directory for project
+```javascript
+├── build
+├── package.json
+├── src
+│   └── index.js
+└── webpack.config.js
+```
+2) Install ```webpack```
+```javascript
+npm install --save-dev webpack webpack-cli
+```
+3) ```webpack.config.js```
+```javascript
+const path = require('path')
+
+const config = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: 'main.js'
+  }
+}
+module.exports = config
+```
+4) Script in ```package.json```
+```javascript
+"scripts": {
+  "build": "webpack --mode=development"
+},
+```
+5) Basic ```index.js```
+```javascript
+const hello = name => {
+  console.log(`hello ${name}`)
+}
+```
+6) Running ```npm run build``` will create a file based on the configs in ```webpack.config.js``` --> ```/build/main.js```
+7) Basic ```App.js```
+```javascript
+const App = () => {
+  return null
+}
+
+export default App
+```
+8) Import ```App``` into ```index```
+```javascript
+import App from './App';
+
+const hello = name => {
+  console.log(`hello ${name}`)
+}
+
+App()
+```
+9) Running ```npm run build``` shows that both files are now acknowledged
+
+
+### **Configuration file**
+```javascript
+const path = require('path')
+
+const config = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: 'main.js'
+  }
+}
+
+module.exports = config
+```
+
+* Target directory ('output/path') needs an *absolute path*
+* path.resolve transforms a sequence of paths to an absolute path
+* __dirname: Global variable in Node; Stores path to current directory
+
+### **Bundling React**
+Transform application into a **minimal** React application
+```
+npm install react react-dom
+```
+
+Basic ```index.js```
+```javascript
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+```
+
+Basic ```App.js```
+```javascript
+import React from 'react' // we need this now also in component files
+
+const App = () => {
+  return (
+    <div>
+      hello webpack
+    </div>
+  )
+}
+
+export default App
+```
+
+Basic ```index.html```
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>React App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/javascript" src="./main.js"></script>
+  </body>
+</html>
+```
+
+Bundling causes an error stating "an appropriate *loader* is needed to bundle ```App.js```
+
+### **Loaders**
+Webpack only knows how to deal with plain JavaScript so we must **specify** to webpack what needs to be process before
+* The basic ```App.js``` we set up above uses JSX
+
+```javascript
+npm install @babel/core babel-loader @babel/preset-react --save-dev
+```
+
+Loaders are configured under the ```module``` property in the ```rules``` array of ```webpack.config.js```
+```javascript
+const config = {
+  entry: '...',
+  output: {
+    ...
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-react'],
+        },
+      },
+    ],
+  },
+}
+```
+* **test**: Specify which files the loader will be used for
+* **loader**: Which loader to utilize
+* **options**: Parameters for the loader
+
+<br>
+
+**NOTE**: Bundled App's that use ```async/await``` might not render anything to some browsers because of deprecated solutions through babel  
+-
+It necessitates the install of two more missing dependencies
+```javascript
+npm install core-js regenerator-runtime
+```
+and import at the top of ```index.js```
+```javascript
+import 'core-js/stable/index.js'
+import 'regenerator-runtime/runtime.js'
+```
+
+### **Transpilers**
+**Transpile**: To transform code of one form into another
+* We are transpiling JSX to JS with **Babel**
+* All browsers don't support the latest features of ES7/6, thus transpiling helps with implementing the ES5 standard
+* The transpilation process is configured with Babel plugins/presets (groups of pre-configured plugins)
+  * ```@babel/preset-react```
+    * Transpiling source code
+  * ```@babel/preset-env```
+    * Transpile code to make it compatible with ES5
+    * ```
+      npm install @babel/preset-env --save-dev
+      ```
+
+### **CSS**
+CSS used by our App needs to use **css** and **style** loaders
+```javascript
+npm install style-loader css-loader --save-dev
+```
+
+```javascript
+{
+  rules: [
+    {
+      test: /\.js$/,
+      ...
+    },
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader'],
+    },
+  ];
+}
+```
+* **CSS loader**: Loads the CSS files
+* **Style loader**: Generates and injects a style element that contains all the styles of the application
+  * These two loaders will include the CSS in the ```main.js``` file so it does not need to be imported into the built ```index.html```
+
+**Note**: CSS can be generated into its own separate file with the [```mini-css-extract-plugin```](https://github.com/webpack-contrib/mini-css-extract-plugin)
+
+
+### **Webpack-dev-server**
+We will now install ```webpack-dev-server``` to make it possible to load changes dynamically (instead of bundling->refresh)
+```javascript
+npm install --save-dev webpack-dev-server
+```
+
+```package.json```
+```javascript
+{
+  "scripts": {
+    "build": ...
+    "start": "webpack serve --mode=development"
+  },
+}
+```
+
+```webpack.config.js```
+```javascript
+  devServer: {
+    static: path.resolve(__dirname, 'build'),
+    compress: true,
+    port: 3000,
+  },
+```
+
+Bundling is only done *in memory*, and live changes will be reflected
+
+### **Source maps**
+Source maps will help us with **debugging** by *mapping* the errors within the bundled executable to the original source code
+
+```webpack.config.js```
+```javascript
+const config = {
+  // ...
+  devtool: 'source-map',
+  // ..
+};
+```
+
+### **Minifying the code**
+We can utilize ```UglifyJS``` to dramatically optimize our build files
+* Since Webpack v4, there is **no additional configuration** needed, and all that needs to be done is specifying the **mode** for the **build script** (development --> production)
+
+```javascript
+  "scripts": {
+    "build": "webpack --mode=production",
+    "start": "webpack serve --mode=development"
+  },
+```
+* Code is transformed to remove comments, unnecessary whitespace, newline characters, and variable names replaced with a single character
+
+### **Development and production configuration**
+Set up servers
+* **Local** ```json-server``` (port 3001)
+* **Development** server will use [the heroku app](https://obscure-harbor-49797.herokuapp.com/api/notes)
+
+Global variable (BACKEND_URL) is created in ```webpack.config.js```
+* '**config**': **object --> function**
+* '**env**': Variable for environment (not used yet...?)
+* '**argv**' ('argv.**mode**'): Gets the mode of the instance **through the script** (i.e. 'production'/'development' from 'build'/'start' scripts respectively) 
+  * ```
+    "build": "webpack --mode=production",
+    "start": "webpack serve --mode=development",
+    ```
+
+```DefinePlugin``` from webpack is used for defining **global default constants** that can be used in the bundled code
+* We set the ```BACKEND_URL``` to be conditional on the **mode**
+```javascript
+const webpack = require('webpack')
+
+const config = (env, argv) => {
+  console.log('argv', argv.mode)
+
+  const backend_url = argv.mode === 'production'
+    ? 'https://obscure-harbor-49797.herokuapp.com/api/notes'
+    : 'http://localhost:3001/notes'
+
+  return {
+    ...,
+    plugins: [
+      new webpack.DefinePlugin({
+        BACKEND_URL: JSON.stringify(backend_url)
+      })
+    ]
+  }
+}
+
+module.exports = config
+```
+
+Custom hook + Global variable constant
+-
+```javascript
+const useNotes = (url) => {
+  const [notes, setNotes] = useState([])
+  useEffect(() => {
+    axios.get(url).then(response => {
+      setNotes(response.data)
+    })
+  }, [url])
+  return notes
+}
+
+const App = () => {
+  const [counter, setCounter] = useState(0)
+  const [values, setValues] = useState([])
+  const notes = useNotes(BACKEND_URL)
+
+  // ...
+  return (
+    <div className="container">
+      hello webpack {counter} clicks
+      <button onClick={handleClick} >press</button>
+      <div>{notes.length} notes on server {BACKEND_URL}</div>
+    </div>
+  )
+}
+```
+
+**Note**: If the development and production configurations differ a lot, remember it is a good idea to [**separate the configuration**](https://webpack.js.org/guides/production/)
+-
+
+Run development server on ```json-server```
+* http://localhost:3000/
+
+Run production server on ```live-server```
+* http://127.0.0.1:5500/webpack-configuration/build/index.html
+* VS Code extension
+
+Run production server on ```static-server```
+* http://localhost:9080/
+* ```npx static-server``` within **/build**
+  * ```npx``` = Node **executable** (no install)
+  * ```npm``` = Node **manager** (installs package)
+
+### **Polyfill**
+For applications to be **IE-compatible**, a ```polyfill``` is needed
+* Polyfill **adds the missing functionality to older browsers**
+* Ways to add
+  1) **webpack and Babel** 
+  2) [**existing polyfill libraries**](https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-browser-Polyfills)
+
+We will use the ```promise-polyfill``` library and add the simple to use code to ```index.js```
+```javascript
+import PromisePolyfill from 'promise-polyfill'
+
+if (!window.Promise) {
+  window.Promise = PromisePolyfill
+}
+```
+* Now the global ```Promise``` object will be implemented, if the browser doesn't support it
+
+
+### **Eject**
+An app initialized from create-react-app uses webpack behind the scenes
+
+If you wish to revert to a **default configuration** and strip out the files from c-r-a, you can **eject** the project and the default config will be stored in ```/config``` and a modified ```package.json```
+
+If possible, it is recommended to set up your own webpack config from the start
+-
