@@ -982,6 +982,15 @@ import 'regenerator-runtime/runtime.js'
     * ```
       npm install @babel/preset-env --save-dev
       ```
+	* ```js
+			{
+				test: /\.js$/,
+				loader: 'babel-loader',
+				options: {
+					presets: ['@babel/preset-env', '@babel/preset-react']
+				}
+			}
+			```
 
 ### **CSS**
 CSS used by our App needs to use **css** and **style** loaders
@@ -1170,3 +1179,163 @@ If you wish to revert to a **default configuration** and strip out the files fro
 
 If possible, it is recommended to set up your own webpack config from the start
 -
+
+<br>
+
+## **Class Components, Miscellaneous**
+### **Class components**
+We will now go over "old" React (pre-16.8 where ```hooks``` were introduced)
+
+Main characteristics of a **class component**
+1) [```constructor```](https://reactjs.org/docs/react-component.html#constructor)
+   * Called **before** it is "rendered" for the first time to the initial DOM (AKA **mounted**)
+   * Call ```super(props)``` if inheriting from ```React.Component```
+   * Usually two purposes for React constructors
+     * Initializing local state (```this.state```)
+     * Binding event handler methods to an instance
+   * Shouldn't call ```setState``` in the constructor
+     * Assign to ```this.state``` instead 
+       * All other methods that wish to update the state should use ```this.setState()``` (never assigning to ```this.state```)
+2) ```this```
+   * Properties and methods of the component are self-referenced with ```this``` 
+3) ```render```
+   * Required
+   * Keep this function **pure** meaning that it **does not modify** component state, and returns the same result each time it's invoked
+4) ```state```
+    * Class components **contain only one state** with **multiple parts**
+  	*
+		```js
+		this.state = {
+			anecdotes: [],
+			current: 0
+		}
+		```
+	* 
+5) ```setState```
+  * Method to **update all** of state's properties
+    * ```this.setState( {current: 3} )```
+    * ```this.setState( {anecdotes: resonseData } )```
+  * Rerenders the component (calls the ```render``` method)
+6) ```lifecycle methods```
+   	* ```componentDidMount()```
+    	* The ```useEffect()``` of class components
+        	* Fetch data
+    	* Called immediately after a component is **mounted**
+
+
+### **Organization of code in React application**
+[Resource](https://medium.com/hackernoon/the-100-correct-way-to-structure-a-react-app-or-why-theres-no-such-thing-3ede534ef1ed)
+
+### **Frontend and backend in the same repo**
+In this course, we **copied** the bundled frontend code into the backend repo and served that (part 4)
+
+Another approach would be to deploy the frontend code separately
+* [Next.js](https://nextjs.org/) 
+* [Remix](https://remix.run/)
+
+[Single repo structure](https://github.com/fullstack-hy2020/create-app) with ```/client``` & ```/server``` sub-directories for the frontend/backend
+
+### **Changes on the server**
+Changes (e.g. when blogs are added by other users to the bloglist service) or time-consuming computation to the backend need to be reflected on the frontend
+* Naive approach: **polling** --> Repeated (```setInterval``` calls) requests to the  backend API
+* Sophisticated
+  * **WebSockets**: Two-way communication channel between browser and server
+    * Just need to set up callback functions to **respond** to updates rather than **ask & receive**
+    * **Not fully supported on all browsers**
+  * **Socket.io** uses WebSocket API but with **fallback options** for less supported browsers
+
+### **Virtual DOM**
+React *rarely* or *never* directly manipulates the actual DOM
+
+React creates a **virtual DOM** that is stored in system memory during runtime which then with ```ReactDOM```, outputs the virtual DOM to the real DOM
+* When the **state is changed**, a **new virual DOM** is defined and React computes whats the most optimal way to update the DOM (instead of replacing the whole thing)
+
+### **On the role of React in applications**
+<img src="./notes-md-images/model-view-controller.png" alt="drawing" width="200"/>
+
+* Model-View-Controller pattern
+
+React is a *library* (not framework) whose domain is the **View**
+* A *framework* like **Angular** is more of an all-encompassing Frontend MVC framework
+
+React + Redux --> Flux architecture
+* Business logic is handled using the Redux state and action creators
+* Redux thunk takes the business logic to almost completely separated from React
+
+Flux architecture adds overhead to the application
+* A smaller application/prototype might benefit from using React as not just a UI library
+* React Context API + ```useReducer``` is one solution to a centralized state management without the need of third-party libraries (redux) 
+  * [Resource](https://www.simplethread.com/cant-replace-redux-with-hooks/)
+  * Not suitable for an application with a lot of UI components
+
+### **React/node-application security**
+1) Injection
+* Malicious text sent using a form in an application that can disrupt application processes
+* Users can submit SQL strings to be unknowingly executed by an application
+* Prevention
+  * **parameterized queries**
+  * NoSQL databases (e.g. mongoose) prevents them by sanitizing queries
+2) Cross-site scripting (XSS)
+* Injection of malicious JS code into a legit web app to be executed in the browser of another visitor of the web app
+* Prevention
+  * Make sure libraries are up-to-date
+  * Check dependencies version status
+	```js
+	npm outdated --depth 0
+	```
+  * Update package.json with the help of the ```npm-check-updates``` tool
+  ```js
+	npm install -g npm-check-updates
+	npm-check-updates
+	ncu -u
+	npm install
+	```
+	* Auditing the packages will check on the security of dependencies
+	```js
+	npm audit
+	```
+3) Broken Authentication (related - Broken Access Control)
+4) Check and sanitize data from the browser
+	* URL parameters
+	* HTTP headers/cookies
+	* User-uploaded files
+
+**Helmet** is a helpful library that includes a set of **Middlewares** that eliminate some security vulnerabilities in **Express** apps
+-
+
+<br>
+
+### **Current trends**
+#### **Typed versions of JS**
+JavaScript variables tend to have an annoying bug with the **dynamic typing**
+* PropTypes is a mechanism to enforce type checking for props passed to React components
+
+**Static type checking** verifies the program against some set of properties for all possible inputs
+* TypeScript
+
+<br>
+
+#### **Server-side rendering, isomorphic applications and universal code**
+1) **Server-side rendering**
+* Servers doing the work of pre-rendering React components to send to the browser for the first time
+* One motivation: SEO
+2) **Isomorphic applications and universal code**
+* IWA: An application that **renders on the front AND backend**
+* UC: Code that can be executed in most environments (front and backend)
+
+**Next.js** is a rising library that is implemented on top of React that makes universal applications more appealing
+
+<br>
+
+#### **Progressive web apps**
+* Web apps that work as well as possible on EVERY platform
+* Internet connection, screen size, etc. shouldn't hamper functionality or usability
+* Create-react-app can create progressive apps with the PWA custom template
+```js
+npx create-react-app my-app --template cra-template-pwa
+```
+* Offline functionality is implemented with the help of **service workers**
+
+<br>
+
+#### **Microservice architecture**
