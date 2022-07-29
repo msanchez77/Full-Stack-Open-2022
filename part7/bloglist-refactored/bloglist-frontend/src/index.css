@@ -1,0 +1,43 @@
+p {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.form-field {
+  margin-bottom: 8px;
+}
+.form-field label {
+  margin-right: 4px;
+}
+
+.notification {
+  color: #000;
+  padding: 1rem;
+  font-size: 24px;
+  border: 2px solid blue;
+
+  transition: 1s all ease-in-out;
+}
+
+.info {
+  background-color: #f3f3f3;
+  border: 2px solid limegreen;
+}
+.error {
+  background-color: #f3f3f3;
+  border: 2px solid red;
+}
+
+.notification.blank {
+  display: none;
+}
+
+.togglable-wrapper {
+  margin-bottom: 2rem;
+}
+
+
+/* Table */
+table {border-spacing:10px;}
+th {text-align:left;}
+td:nth-child(2) {text-align:right;}

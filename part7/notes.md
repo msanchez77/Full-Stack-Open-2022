@@ -1306,7 +1306,7 @@ Flux architecture adds overhead to the application
 <br>
 
 ### **Current trends**
-#### **Typed versions of JS**
+#### **1) Typed versions of JS**
 JavaScript variables tend to have an annoying bug with the **dynamic typing**
 * PropTypes is a mechanism to enforce type checking for props passed to React components
 
@@ -1315,7 +1315,7 @@ JavaScript variables tend to have an annoying bug with the **dynamic typing**
 
 <br>
 
-#### **Server-side rendering, isomorphic applications and universal code**
+#### **2) Server-side rendering, isomorphic applications and universal code**
 1) **Server-side rendering**
 * Servers doing the work of pre-rendering React components to send to the browser for the first time
 * One motivation: SEO
@@ -1327,7 +1327,7 @@ JavaScript variables tend to have an annoying bug with the **dynamic typing**
 
 <br>
 
-#### **Progressive web apps**
+#### **3) Progressive web apps**
 * Web apps that work as well as possible on EVERY platform
 * Internet connection, screen size, etc. shouldn't hamper functionality or usability
 * Create-react-app can create progressive apps with the PWA custom template
@@ -1338,4 +1338,127 @@ npx create-react-app my-app --template cra-template-pwa
 
 <br>
 
-#### **Microservice architecture**
+#### **4) Microservice architecture**
+So far we have made apps that had a **monolithic** backend
+* **One** application making up a whole and **running on a single server**, serving only a few API endpoints
+* Not scalable
+
+**Microservice architectures** segment the backend to many **separate**, **independent** services that communicate via the network
+* Each microservice's responsibility is for a **particular logical function**
+* Pure microservice architectures do **NOT** share a database
+
+Example from our bloglist app
+* Microservice #1
+  * Handling **user**
+    * registration
+    * authentication
+* Microservice #2
+  * Handling **blogs**
+    * Adding blogs, removing blog, etc.
+
+
+The use of microservices has steadily been gaining hype to be kind of a [silver bullet](https://en.wikipedia.org/wiki/No_Silver_Bullet) of today, which is being offered as a solution to almost every kind of problem. However, there are a number of challenges when it comes to applying a microservice architecture, and it might make sense to go [monolith first](https://martinfowler.com/bliki/MonolithFirst.html) by initially making a traditional all-encompassing backend. [Or maybe not](https://martinfowler.com/articles/dont-start-monolith.html). There are a bunch of different opinions on the subject. Both links lead to Martin Fowler's site; as we can see, even the wise are not entirely sure which one of the right ways is more right.
+
+#### **Serverless**
+Instead of having **processes** ran for even the smallest executable, **serverless** services allow **the execution of individual functions** in the **cloud**
+
+Takes out the responsibility of managing a large-scale server and all that comes with it
+* performance
+* security
+* updates
+* size
+* scale
+* so much more
+
+**AWS Lambda**
+* Runs backend code in response to user events
+* Different services
+  * Object uploads --> Amazon s3 buckets
+  * Updates --> Amazon DynamoDB tables
+  * Data --> Amazon Kinesis streams
+  * In-app activity
+* Handles all the capacity scaling, patching, administration of the infrastructure, and provides performance reports
+* Upload code (called a **Lambda function**) through a ZIP file, write code in the AWS IDE, or use function templates pre-built by Lambda for commonly used operations
+* Can call other AWS services with the AWS SDK
+* Choose AWS event sources (e.g. S3 buckets, DynamoDB) for your code to trigger an operation
+
+
+<br>
+
+### **Useful libraries and interesting links**
+<!-- -->
+<p>The JavaScript developer community has produced a large variety of useful libraries. If you are developing anything more substantial, it is worth it to check if existing solutions are already available.
+Below are listed some libraries recommended by trustworthy parties.</p>
+<p>If your application has to <strong>handle complicated data</strong>, <a href="https://www.npmjs.com/package/lodash">lodash</a>, which we recommended in <a href="/en/part4/structure_of_backend_application_introduction_to_testing#exercises-4-3-4-7">part 4</a>, is a good library to use. If you prefer functional programming style, you might consider using <a href="https://ramdajs.com/">ramda</a>.</p>
+<!-- -->
+<p>If you are handling times and dates, <a href="https://github.com/date-fns/date-fns">date-fns</a> offers good tools for that.</p>
+<!-- -->
+<p><a href="https://www.npmjs.com/package/formik">Formik</a> and <a href="https://final-form.org/react/">final-form</a> can be used to handle forms more easily.
+If your application displays graphs, there are multiple options to choose from. Both <a href="http://recharts.org/en-US/">recharts</a> and <a href="https://github.com/highcharts/highcharts-react">highcharts</a> are well-recommended.</p>
+<p>The <a href="https://github.com/facebook/immutable-js/">immutable.js</a> library maintained by Facebook provides, as the name suggests, immutable implementations of some data structures. The library could be of use when using Redux, since as we <a href="/en/part6/flux_architecture_and_redux#pure-functions-immutable">remember</a> in part 6, reducers must be pure functions, meaning they must not modify the store&#x27;s state but instead have to replace it with a new one when a change occurs. Over the past year, some of the popularity of Immutable.js has been taken over by <a href="https://github.com/mweststrate/immer">Immer</a>, which provides similar functionality but in a somewhat easier package.</p>
+<p><a href="https://redux-saga.js.org/">Redux-saga</a> provides an alternative way to make asynchronous actions for <a href="/en/part6/communicating_with_server_in_a_redux_application#asynchronous-actions-and-redux-thunk">redux thunk</a> familiar from part 6. Some embrace the hype and like it. I don&#x27;t.</p>
+<p>For single-page applications, the gathering of analytics data on the interaction between the users and the page is <a href="https://developers.google.com/analytics/devguides/collection/gtagjs/single-page-applications">more challenging</a> than for traditional web applications where the entire page is loaded. The <a href="https://github.com/react-ga/react-ga">React Google Analytics</a> library offers a solution.</p>
+<p>You can take advantage of your React know-how when developing mobile applications using Facebook&#x27;s extremely popular <a href="https://facebook.github.io/react-native/">React Native</a> library, which is the topic of <a href="/en/part10">part 10</a> of the course.</p>
+<p>When it comes to the tools used for the management and bundling of JavaScript projects, the community has been very fickle. Best practices have changed rapidly (the years are approximations, nobody remembers that far back in the past):</p>
+<ul>
+<li>2011 <a href="https://www.npmjs.com/package/bower">Bower</a></li>
+<li>2012 <a href="https://www.npmjs.com/package/grunt">Grunt</a></li>
+<li>2013-14 <a href="https://www.npmjs.com/package/gulp">Gulp</a></li>
+<li>2012-14 <a href="https://www.npmjs.com/package/browserify">Browserify</a></li>
+<li>2015- <a href="https://www.npmjs.com/package/webpack">Webpack</a></li>
+</ul>
+<p>Hipsters seem to have lost their interest in tool development after webpack started to dominate the markets. A few years ago, <a href="https://parceljs.org">Parcel</a> started to make the rounds marketing itself as simple (which Webpack absolutely is not) and faster than Webpack. However, after a promising start, Parcel has not gathered any steam, and it&#x27;s beginning to look like it will not be the end of Webpack. </p>
+<p>Another notable mention is the <a href="https://rome.tools/">Rome</a> library, which aspires to be an all-encompassing toolchain to unify linter, compiler, bundler, and more. It is currently under heavy development since the initial commit earlier this year on Feb 27, but the outlook sure seems promising.</p>
+<p>The site <a href="https://reactpatterns.com/">https://reactpatterns.com/</a> provides a concise list of best practices for React, some of which are already familiar from this course. Another similar list is <a href="https://vasanthk.gitbooks.io/react-bits/">react bits</a>.</p>
+
+
+## **Exercises**
+### **Prettier Summary**
+* Install VS Code extension: Prettier
+* Add Prettier to project
+  * ```npm install --save-dev --save-exact prettier```
+* Make .json file to let the editor know Prettier is being used
+  * ```echo {}> .prettierrc.json```
+* Make .ignore file (can copy from .gitignore/.eslintignore)
+  * ```touch .prettierignore```
+* If using ESLint, install the ESLint plugin **eslint-config-prettier**
+  * ```npm install --save-dev --save-exact eslint-config-prettier```
+* Run plugin file on any file to check which ESLint rules are redundant and can be removed (since Prettier takes care of it)
+  * ```npx eslint-config-prettier src/App.js```
+* Now that the editor knows which files to ignore and that Prettier is configured, run ```write``` to format the project
+  * ```npx prettier --write .```
+* Lastly check to see if all files are formatted to Prettier specs
+  * ```npx prettier --check .```
+
+Add configuration to Prettier rules with a ```prettier.config.js``` file
+* https://prettier.io/docs/en/configuration.html
+* https://prettier.io/docs/en/options.html
+
+
+## Learned during part7f exercises
+* DON'T FORGET TO **DISPATCH** actions from components
+* Thunk middleware gets access to the store methods ```dispatch``` and ```getState``` as parameters
+  * **Thunks** are a pattern of writing **functions** with **logic inside** that can **interact** with a Redux store's **dispatch** and **getState** methods
+```javascript
+// BlogForm.js (component)
+dispatch(createBlog({
+  title: newTitle,
+  author: newAuthor,
+  url: newUrl,
+}));
+
+// blogReducer.js (Redux reducer)
+export const createBlog = content => {
+  return async (dispatch,getState) => {
+    console.log(getState())
+    const newBlog = await blogService.create(content)
+    dispatch(appendBlog(newBlog))
+  }
+}
+```
+  * The control flow happens like this
+      1) Frontend form submit button click
+      2) Component action creator *dispatches* asynchronous action creator from a state's reducer
+
+* You CANNOT call ```useSelector``` inside of useEffect
+
