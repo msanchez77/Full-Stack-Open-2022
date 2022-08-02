@@ -310,11 +310,17 @@ describe("updating a blog", () => {
     let xya =  await api
                       .post(`/api/blogs/${blogToUpdate.id}/comments`)
                       .set("Authorization", token)
-                      .send({comments: "Hello"})
+                      .set("Content-Type", "application/json")
+                      .send("Hello")
                       .expect(200)
                       .expect("Content-Type", /application\/json/);
 
+    console.log(xya)
+
     expect(xya.body.comments).toHaveLength(1)
+    expect(xya.body.comments[0].message).toEqual("Hello")
+    expect(xya.body.comments[0].id).toBeDefined()
+    expect(xya.body.comments[0]._id).toBeDefined()
 
   }, 100000)
 });

@@ -19,7 +19,10 @@ const blogSchema = new mongoose.Schema({
     default: 0,
   },
   comments: [
-    {type: String}
+    {
+      message: {type:String},
+      id: {type:String}
+    }
   ]
 });
 

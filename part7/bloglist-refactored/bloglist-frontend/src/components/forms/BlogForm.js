@@ -1,29 +1,13 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { createBlog } from "../../reducers/blogReducer";
-// import { setNotification } from "../../reducers/notificationReducer";
-
-const useField = (type) => {
-  const [value, setValue] = useState('');
-
-  const onChange = event => {
-    event === '' ? setValue('') : setValue(event.target.value)
-  }
-
-  return {
-    type,
-    value,
-    onChange
-  }
-}
+import { useField } from "../../hooks/customHooks";
 
 
 const BlogForm = ({toggleVisibility}) => {
   const title = useField("text");
   const author = useField("text");
   const url = useField("text");
-
 
   const dispatch = useDispatch();
 

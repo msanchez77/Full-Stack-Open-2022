@@ -7,6 +7,8 @@ const Blog = require("../models/blog");
 const { tokenExtractor, userExtractor } = require("../utils/middleware");
 const logger = require("../utils/logger");
 
+const { v4: uuidv4 } = require('uuid');
+
 blogRouter.get("/", async (request, response) => {
   if (request.query.author) {
     logger.info("Querying author")
@@ -69,7 +71,11 @@ blogRouter.post(
 
     const result =  await Blog.findByIdAndUpdate(
                       request.params.id,
-                      { $push: {"comments": body.comments} },
+                      { $push: {"comments": {
+                          "message": body,
+                          "id": uuidv4()
+                        }
+                      }},
                       {new:true}
                     );
 

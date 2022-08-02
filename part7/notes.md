@@ -1435,7 +1435,7 @@ Add configuration to Prettier rules with a ```prettier.config.js``` file
 * https://prettier.io/docs/en/options.html
 
 
-## Learned during part7f exercises
+## **Learned during part7f exercises**
 * DON'T FORGET TO **DISPATCH** actions from components
 * Thunk middleware gets access to the store methods ```dispatch``` and ```getState``` as parameters
   * **Thunks** are a pattern of writing **functions** with **logic inside** that can **interact** with a Redux store's **dispatch** and **getState** methods
@@ -1463,10 +1463,18 @@ export const createBlog = content => {
 * You CANNOT call ```useSelector``` inside of useEffect
 
 
-### Learned after exercise 7.18
+## **Learned after exercise 7.18**
 Revisited Jest+Supertest and the backend for this exercise
 
-* Jest .send() takes an object so the field does NOT need to be in quotation marks
+* Jest .send() takes an object so the field does NOT need to be in quotation marks 
+  * MongoDB Operation DOES
+    * ```js
+      const result =  await Blog.findByIdAndUpdate(
+                  request.params.id,
+                  { $push: {"comments": body.comments} },
+                  {new:true}
+                );
+      ```
 * PAY ATTENTION TO STATUS CODE
   * I had set 204 because I didn't think I needed any content returned from the request
   * I wanted a response to check the updated blog (adding a comment) and the response given from the request was NOT what I was expecting. 
@@ -1484,4 +1492,17 @@ Revisited Jest+Supertest and the backend for this exercise
     ```
 * ```{new:true}``` will return the updated object
 * ```{upsert:true}``` was an interesting option I found that will create a new object, if one doesn't match the ID (probably not recommended for comments)
-* 
+
+## **Learned during exercise 7.19**
+Disable ESLint rules for file (.eslintignore wasn't detecting?)
+* ```.eslintrc.js```
+  * ```js
+    'overrides': [
+      {
+        "files": ["cypress/integration/*.spec.js"],
+        "rules": {
+          "no-undef": "off"
+        }
+      }
+    ],
+    ```

@@ -86,6 +86,22 @@ export const loadRemoveBlog = blogObject => {
   }
 }
 
+export const loadAddComment = (blogId, comment) => {
+  return async dispatch => {
+    try {
+      console.log(`Blog ID: ${blogId}`)
+      console.log(`Comment: ${comment}`)
+
+      await blogService.updateComment(blogId, comment)
+
+      // dispatch(removeBlog(blogObject))
+      // dispatch(setNotification(`"${blogObject.title}" removed!`, 5))
+    } catch(e) {
+      dispatch(setNotification(e.response.data.error, 5, 'error'))
+    }
+  }
+}
+
 
 export default blogSlice.reducer
 

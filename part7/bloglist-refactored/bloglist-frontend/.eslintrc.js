@@ -16,7 +16,7 @@ module.exports = {
     'sourceType': 'module'
   },
   'rules': {
-        'eqeqeq': 'error',
+    'eqeqeq': 'error',
     'no-console': 0,
     'react/prop-types': 0,
     'react/react-in-jsx-scope': 'off'
@@ -25,5 +25,13 @@ module.exports = {
     'react': {
       'version': 'detect'
     }
-  }
+  },
+  'overrides': [
+    {
+      "files": ["cypress/integration/*.spec.js"],
+      "rules": {
+        "no-undef": "off"
+      }
+    }
+  ],
 }
