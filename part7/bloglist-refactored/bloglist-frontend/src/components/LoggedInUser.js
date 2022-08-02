@@ -13,9 +13,8 @@ const LoggedInUser = ({ user }) => {
 
   return (
     <>
-      <p>{user.name} logged in</p>
+      <span>{user.name} logged in</span>
       <button onClick={() => localStorageClear()}>logout</button>
-      <div style={{ height: "24px" }}></div>
     </>
   );
 };

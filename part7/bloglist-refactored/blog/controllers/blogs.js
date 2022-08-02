@@ -60,6 +60,27 @@ blogRouter.post(
   }
 );
 
+
+blogRouter.post(
+  "/:id/comments",
+  tokenExtractor,
+  async (request, response) => {
+    const body = request.body;
+
+    const result =  await Blog.findByIdAndUpdate(
+                      request.params.id,
+                      { $push: {"comments": body.comments} },
+                      {new:true}
+                    );
+
+    response.status(200).json(result);
+  }
+);
+
+
+
+
+
 blogRouter.delete(
   "/:id",
   tokenExtractor,

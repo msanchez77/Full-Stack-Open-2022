@@ -9,13 +9,13 @@
       "request": "launch",
       "name": "Test Blog",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\tests\\blog_api.test.js",
+      "program": "${workspaceFolder}\\blog\\tests\\blog_api.test.js",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "run-script",
         "test",
         "--",
-        "tests/blog_api.test.js",
+        "blog/tests/blog_api.test.js",
         "-t",
         "'comment'"
       ]

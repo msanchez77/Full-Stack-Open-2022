@@ -1462,3 +1462,26 @@ export const createBlog = content => {
 
 * You CANNOT call ```useSelector``` inside of useEffect
 
+
+### Learned after exercise 7.18
+Revisited Jest+Supertest and the backend for this exercise
+
+* Jest .send() takes an object so the field does NOT need to be in quotation marks
+* PAY ATTENTION TO STATUS CODE
+  * I had set 204 because I didn't think I needed any content returned from the request
+  * I wanted a response to check the updated blog (adding a comment) and the response given from the request was NOT what I was expecting. 
+  * Expect ("Content-Type", /application\/json/) makes sure what to expect
+    * I knew of this before but didn't bother adding it, causing extra time
+* When sending a simple object, ```request.body``` (in a controllers file) will pull out the information
+* MongoDB ```$push``` will CONCAT to an array 
+  * Added before the update object
+  * ```js
+    await Blog.findByIdAndUpdate(
+      request.params.id,
+      { $push: {"comments": body.comments} },
+      {new:true}
+    );
+    ```
+* ```{new:true}``` will return the updated object
+* ```{upsert:true}``` was an interesting option I found that will create a new object, if one doesn't match the ID (probably not recommended for comments)
+* 

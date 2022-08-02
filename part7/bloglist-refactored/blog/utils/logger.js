@@ -1,9 +1,9 @@
 const info = (...params) => {
   if (process.env.NODE_ENV !== "test") {
     console.log(...params);
-  } else {
+  } /*else {
     console.log("TEST - ", ...params);
-  }
+  }*/
 };
 
 const error = (...params) => {

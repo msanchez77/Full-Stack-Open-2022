@@ -28,11 +28,15 @@ import {
 
 import Users from "./components/Users";
 import IndividualUser from "./components/IndividualUser";
+import IndividualBlog from "./components/IndividualBlog";
 
 
 const App = () => {
+  // Hook/Data Initialization
   const dispatch = useDispatch();
   let user = useSelector(state => state.user)
+  let blogs = useSelector(state => state.blogs)
+  let users = useSelector(state => state.database)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -41,18 +45,23 @@ const App = () => {
       dispatch(setNotification(`User - ${user.username} - found in local storage!`, 5))
     }
   }, []);
+  /* ------------------------ */
 
-  // let blogs = useSelector(state => state.blogs)
-  let users = useSelector(state => state.database)
 
-  // useMatch
-  const match = useMatch('/users/:id')
-  const individualUser = match
-    ? users.find(user => user.id === match.params.id)
+  // Matching URL Parameters
+  const matchUser = useMatch('/users/:id')
+  const individualUser = matchUser
+    ? users.find(user => user.id === matchUser.params.id)
     : null
 
+  const matchBlog = useMatch('/blogs/:id')
+  const individualBlog = matchBlog
+    ? blogs.find(blog => blog.id === matchBlog.params.id)
+    : null
 
-  // Blog Form method
+  /* ------------------------ */
+
+  // Conditional Rendering
   const blogForm = () => (
     <>
       <Togglable buttonLabel="new blog">
@@ -70,35 +79,48 @@ const App = () => {
         <BlogList />
       </div>
   }
+  /* ------------------------ */
+
+  // Style
+  const padding = {
+    padding: 5
+  }
+
+  /* ------------------------ */
 
   // Return
   return (
     <div>
-      <h1>Blogs Frontend</h1>
-      <Notification />
+      <header>
+        <ul>
+          <li><Link style={padding} to="/">Blogs</Link></li>
+          <li><Link style={padding} to="/users">Users</Link></li>
+          <li className="ml-auto user-account">        
+            {user === null 
+            ? <div>
+                <h2>Log in to application</h2>
+                <Togglable buttonLabel="login">
+                  <LoginForm />
+                </Togglable>
+              </div>
+            : <LoggedInUser user={user} />
+            }       
+          </li>
+        </ul>
+      </header>
 
-      {user === null ? 
-        <div>
-          <h2>Log in to application</h2>
-          <Togglable buttonLabel="login">
-            <LoginForm />
-          </Togglable>
-        </div>
-      :
-        <div>
-          <LoggedInUser user={user} />
-        </div>
-      }
+      <main>
+        <h1>Blogs Frontend</h1>
+        <Notification />
 
-
-      <Routes>
-        <Route path="/" element={homeView(user)} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<IndividualUser individualUser={individualUser} />} />
-      </Routes>
-
+        <Routes>
+          <Route path="/" element={homeView(user)} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<IndividualUser individualUser={individualUser} />} />
+          <Route path="/blogs/:id" element={<IndividualBlog individualBlog={individualBlog} />} />
+        </Routes>
+      </main>
     </div>
-
 
   );
 };

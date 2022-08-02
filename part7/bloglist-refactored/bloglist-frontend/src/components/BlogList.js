@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { loadLikeBlog, loadRemoveBlog } from "../reducers/blogReducer";
 import { setNotification } from "../reducers/notificationReducer";
 
+import { Link } from "react-router-dom";
+
 
 const Blog = ({ user, blog }) => {
   const [infoVisible, setInfoVisibile] = useState(false);
@@ -57,7 +59,12 @@ const Blog = ({ user, blog }) => {
 
   return (
     <div className="blog-info-wrapper" style={blogStyle}>
-      <p style={inlineParagraph}>{blog.title}</p>
+      <Link 
+        to={`/blogs/${blog.id}`}
+        className="blog-title-link"
+        style={inlineParagraph}>
+          {blog.title}
+      </Link>  
       <button className="blog-view-btn" onClick={handleBlogInfo}>
         view
       </button>

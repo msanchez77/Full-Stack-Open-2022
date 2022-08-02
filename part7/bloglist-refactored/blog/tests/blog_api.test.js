@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
 const app = require("../app");
 const supertest = require("supertest");
-const bcrypt = require("bcrypt");
 
 const User = require("../models/user");
 const Blog = require("../models/blog");
 const helper = require("./test_helper");
-const { request } = require("../app");
 
 const api = supertest(app);
 
@@ -296,6 +294,29 @@ describe("updating a blog", () => {
 
     expect(updatedBlog.body.likes).toEqual(100);
   });
+
+  test("comment on blog", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+    expect(blogToUpdate.comments).toHaveLength(0);
+
+
+    const credentials = {
+      username: "apple1",
+      password: "apple",
+    };
+    const token = await getTokenFromLogin(credentials);
+    
+    let xya =  await api
+                      .post(`/api/blogs/${blogToUpdate.id}/comments`)
+                      .set("Authorization", token)
+                      .send({comments: "Hello"})
+                      .expect(200)
+                      .expect("Content-Type", /application\/json/);
+
+    expect(xya.body.comments).toHaveLength(1)
+
+  }, 100000)
 });
 
 afterAll(() => {
