@@ -307,20 +307,25 @@ describe("updating a blog", () => {
     };
     const token = await getTokenFromLogin(credentials);
     
-    let xya =  await api
+    let updatedBlog =  await api
                       .post(`/api/blogs/${blogToUpdate.id}/comments`)
-                      .set("Authorization", token)
-                      .set("Content-Type", "application/json")
+                      .set({
+                        "Authorization": token,
+                        "Content-Type": "text/plain"
+                      })
                       .send("Hello")
                       .expect(200)
                       .expect("Content-Type", /application\/json/);
 
-    console.log(xya)
+    let blogObject = new Blog(updatedBlog.body)                
 
-    expect(xya.body.comments).toHaveLength(1)
-    expect(xya.body.comments[0].message).toEqual("Hello")
-    expect(xya.body.comments[0].id).toBeDefined()
-    expect(xya.body.comments[0]._id).toBeDefined()
+    expect(blogObject.comments).toHaveLength(1)
+    expect(blogObject.comments[0].message).toEqual("Hello")
+    expect(blogObject.comments[0]._id).toBeDefined()
+    expect(blogObject.comments[0].id).toBeDefined()
+    expect.not(blogObject.comments[0].__v).toBeDefined()
+
+
 
   }, 100000)
 });

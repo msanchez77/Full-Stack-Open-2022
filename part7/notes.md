@@ -1506,3 +1506,14 @@ Disable ESLint rules for file (.eslintignore wasn't detecting?)
       }
     ],
     ```
+
+* Setting the Request headers as an object (supertest)
+  * ```js
+    .set({
+      "Authorization": token,
+      "Content-Type": "text/plain"
+    })
+    ```
+* Sending simple text with ```Content-Type: text/plain```
+  * Always look for different options of ones that you always use (application/json)
+* 

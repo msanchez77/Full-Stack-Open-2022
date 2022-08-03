@@ -5,11 +5,11 @@ import { loadAddComment } from '../reducers/blogReducer'
 import { useMatch } from "react-router-dom"
 import { useDispatch } from 'react-redux'
 
-const CommentsList = ({comments}) => {
+const CommentsList = ({comments}) => (
   <ul>
-    {comments.map(c => <li key={c._id}>c</li>)}
+    {comments.map(c => <li key={c.id}>{c.message}</li>)}
   </ul>
-}
+)
 
 const CommentForm = () => {
 
@@ -23,7 +23,7 @@ const CommentForm = () => {
   const actionCommentAdd = async (event) => {
     event.preventDefault()
     
-    dispatch(loadAddComment(blogID, comment.value))
+    dispatch(loadAddComment(blogID.toString(), comment.value))
 
     comment.onChange('');
   };

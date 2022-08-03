@@ -63,7 +63,10 @@ const update = async (updatedBlog) => {
 
 const updateComment = async (blogId, comment) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { 
+      Authorization: token,
+      "Content-Type": "text/plain"
+     }
   };
 
   const response = await axios.post(

@@ -69,7 +69,7 @@ blogRouter.post(
   async (request, response) => {
     const body = request.body;
 
-    const result =  await Blog.findByIdAndUpdate(
+    const updatedBlog =  await Blog.findByIdAndUpdate(
                       request.params.id,
                       { $push: {"comments": {
                           "message": body,
@@ -79,7 +79,7 @@ blogRouter.post(
                       {new:true}
                     );
 
-    response.status(200).json(result);
+    response.status(200).json(updatedBlog);
   }
 );
 

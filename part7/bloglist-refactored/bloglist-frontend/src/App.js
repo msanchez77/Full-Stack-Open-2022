@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useEffect } from "react";
 
-import LoggedInUser from "./components/LoggedInUser";
 import Notification from "./components/Notification";
 import BlogList from "./components/BlogList";
 
@@ -29,7 +28,9 @@ import {
 import Users from "./components/Users";
 import IndividualUser from "./components/IndividualUser";
 import IndividualBlog from "./components/IndividualBlog";
-
+// import BlogHeader from "./components/BlogHeader";
+import BlogHeaderMUI from "./components/BlogHeaderMUI";
+import LoginPage from "./components/LoginPage";
 
 const App = () => {
   // Hook/Data Initialization
@@ -81,33 +82,11 @@ const App = () => {
   }
   /* ------------------------ */
 
-  // Style
-  const padding = {
-    padding: 5
-  }
-
-  /* ------------------------ */
-
   // Return
   return (
-    <div>
-      <header>
-        <ul>
-          <li><Link style={padding} to="/">Blogs</Link></li>
-          <li><Link style={padding} to="/users">Users</Link></li>
-          <li className="ml-auto user-account">        
-            {user === null 
-            ? <div>
-                <h2>Log in to application</h2>
-                <Togglable buttonLabel="login">
-                  <LoginForm />
-                </Togglable>
-              </div>
-            : <LoggedInUser user={user} />
-            }       
-          </li>
-        </ul>
-      </header>
+    <div style={{position:"relative"}}>
+      {/* <BlogHeader user={user} /> */}
+      <BlogHeaderMUI user={user}/>
 
       <main>
         <h1>Blogs Frontend</h1>
@@ -118,8 +97,17 @@ const App = () => {
           <Route path="/users" element={<Users />} />
           <Route path="/users/:id" element={<IndividualUser individualUser={individualUser} />} />
           <Route path="/blogs/:id" element={<IndividualBlog individualBlog={individualBlog} />} />
+          <Route path="/login" element={<LoginPage user={user}/> } />
         </Routes>
+
       </main>
+
+      <footer>
+          <div className="wrapper">
+            <br />
+            <em>Blog List App, Matt Sanchez 2022</em>
+          </div>
+      </footer>
     </div>
 
   );

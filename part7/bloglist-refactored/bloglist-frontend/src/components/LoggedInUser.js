@@ -1,22 +1,19 @@
-import { setUser } from "../reducers/userReducer";
+// import { setUser } from "../reducers/userReducer";
 
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
+// import { Button } from "@mui/material";
 
-const LoggedInUser = ({ user }) => {
-  const dispatch = useDispatch()
+// const LoggedInUser = ({ user }) => {
+//   const dispatch = useDispatch()
 
-  const localStorageClear = () => {
-    window.localStorage.removeItem("loggedBlogAppUser");
 
-    dispatch(setUser(null))
-  };
 
-  return (
-    <>
-      <span>{user.name} logged in</span>
-      <button onClick={() => localStorageClear()}>logout</button>
-    </>
-  );
-};
+//   return (
+//     <>
+//       <span>{user.name} logged in</span>
+//       <Button onClick={() => localStorageClear()}>logout</Button>
+//     </>
+//   );
+// };
 
-export default LoggedInUser;
+// export default LoggedInUser;

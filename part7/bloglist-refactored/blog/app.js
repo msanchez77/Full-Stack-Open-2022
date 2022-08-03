@@ -5,6 +5,8 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 
+const bodyParser = require('body-parser');
+
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 
@@ -27,6 +29,7 @@ app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
 app.use(middleware.requestLogger);
+app.use(bodyParser.text())
 
 app.use("/api/blogs", blogRouter);
 app.use("/api/users", usersRouter);

@@ -92,10 +92,10 @@ export const loadAddComment = (blogId, comment) => {
       console.log(`Blog ID: ${blogId}`)
       console.log(`Comment: ${comment}`)
 
-      await blogService.updateComment(blogId, comment)
+      const blogObject = await blogService.updateComment(blogId, comment)
 
-      // dispatch(removeBlog(blogObject))
-      // dispatch(setNotification(`"${blogObject.title}" removed!`, 5))
+      dispatch(updateBlog(blogObject))
+      dispatch(setNotification(`"${blogObject.title}" new comment!`, 5))
     } catch(e) {
       dispatch(setNotification(e.response.data.error, 5, 'error'))
     }

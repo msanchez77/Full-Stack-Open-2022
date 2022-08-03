@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { loadLogin } from "../../reducers/userReducer"
 
-const LoginForm = () => {
+const LoginForm = ({user}) => {
   const [username, setUsername] = useState([]);
   const [password, setPassword] = useState([]);
 
@@ -14,6 +14,9 @@ const LoginForm = () => {
 
     dispatch(loadLogin(username, password))
 
+    if (user) {
+      alert("HellO");
+    }
     setUsername("");
     setPassword("");
   };
@@ -40,7 +43,7 @@ const LoginForm = () => {
       </div>
       <button type="submit">login</button>
     </form>
-  );
+  )
 };
 
 export default LoginForm;
