@@ -10,10 +10,7 @@ import {
 } from '@mui/material'
 import { useDispatch } from 'react-redux'
 
-// Style
-const padding = {
-  padding: 5
-}
+import StyledCustomization from '../styles/muiButtonStyle';
 
 const BlogHeaderMUI = ({user}) => {
 
@@ -26,28 +23,24 @@ const BlogHeaderMUI = ({user}) => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" className="fullwidth">
       <Toolbar>
         <IconButton edge="start" color="inherit" aria-label="menu">
         </IconButton>
-        <Button color="inherit">
-          <Link style={padding} to="/">Blogs</Link>
-        </Button>
-        <Button color="inherit">
-          <Link style={padding} to="/users">Users</Link>
-        </Button>
-        <Button color="inherit" className="ml-auto user-account">        
-          {user
-            ? <em>{user.name} logged in</em>
-            : <Link to="/login">login</Link>
-          }       
-        </Button>
-        <Button color="inherit" onClick={() => localStorageClear()}>
-          {user
-            ? <em>User</em>
-            : <em>No User</em>
+        {StyledCustomization({label:'Blogs', path:'/'})}
+        {StyledCustomization({label:'Users', path:'/users'})}
+                
+        {user
+          ? <em style={{marginLeft:'auto'}}>{user.name} logged in</em>
+          : <Button color="inherit" sx={{marginLeft:'auto'}} className='user-account'>
+              <Link to="/login">Login</Link>
+            </Button>
+        }       
+        {user
+            ? <Button color="inherit" onClick={() => localStorageClear()}>Logout</Button>
+            : <></>
           }
-        </Button>
+
       </Toolbar>
     </AppBar>
   )

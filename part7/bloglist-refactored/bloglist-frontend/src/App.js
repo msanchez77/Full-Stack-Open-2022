@@ -15,13 +15,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { initializeBlogs } from "./reducers/blogReducer";
 import { initializeDatabase } from "./reducers/databaseReducer";
-import { setNotification } from "./reducers/notificationReducer";
+import { clearNotification, setNotification } from "./reducers/notificationReducer";
 
 
 // React Router
 
 import {
-  Routes, Route, Link, useMatch
+  Routes, Route, Link, useMatch, useNavigate
 } from "react-router-dom"
 /* eslint-enable no-unused-vars */
 
@@ -35,6 +35,7 @@ import LoginPage from "./components/LoginPage";
 const App = () => {
   // Hook/Data Initialization
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   let user = useSelector(state => state.user)
   let blogs = useSelector(state => state.blogs)
   let users = useSelector(state => state.database)
@@ -42,10 +43,20 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeBlogs())
     dispatch(initializeDatabase())
-    if (user) {
-      dispatch(setNotification(`User - ${user.username} - found in local storage!`, 5))
-    }
+    setTimeout(() => dispatch(clearNotification()), 5000)
+    
+    if (user) dispatch(setNotification(`User - ${user.username} - found in local storage!`, 5))
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      navigate('/')
+    } else {
+      dispatch(setNotification('Please login to start blogging', 5))
+      navigate('/login')
+    }
+    dispatch
+  }, [user])
   /* ------------------------ */
 
 
@@ -73,7 +84,7 @@ const App = () => {
 
   const homeView = (user) => {
     return user === null ? 
-      <></>
+      <p>Please <Link to="/login">login to start blogging</Link></p>
       : 
       <div>
         {blogForm()}
@@ -97,17 +108,10 @@ const App = () => {
           <Route path="/users" element={<Users />} />
           <Route path="/users/:id" element={<IndividualUser individualUser={individualUser} />} />
           <Route path="/blogs/:id" element={<IndividualBlog individualBlog={individualBlog} />} />
-          <Route path="/login" element={<LoginPage user={user}/> } />
+          <Route path="/login" element={<LoginPage /> } />
         </Routes>
 
       </main>
-
-      <footer>
-          <div className="wrapper">
-            <br />
-            <em>Blog List App, Matt Sanchez 2022</em>
-          </div>
-      </footer>
     </div>
 
   );

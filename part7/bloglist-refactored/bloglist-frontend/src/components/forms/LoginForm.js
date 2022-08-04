@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { loadLogin } from "../../reducers/userReducer"
 
-const LoginForm = ({user}) => {
+const LoginForm = () => {
   const [username, setUsername] = useState([]);
   const [password, setPassword] = useState([]);
 
@@ -14,9 +14,6 @@ const LoginForm = ({user}) => {
 
     dispatch(loadLogin(username, password))
 
-    if (user) {
-      alert("HellO");
-    }
     setUsername("");
     setPassword("");
   };

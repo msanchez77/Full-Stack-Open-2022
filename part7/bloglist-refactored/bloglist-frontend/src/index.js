@@ -16,10 +16,16 @@ const container = document.getElementById("root");
 const root = ReactDOMClient.createRoot(container);
 root.render(
   <Provider store={store}>
-    <Container>
+    <Container maxWidth="xl" sx={{padding:"0 !important"}}>
       <Router>
         <App />
       </Router>
     </Container>
+    <footer>
+      <div className="wrapper">
+        <br />
+        <em>Blog List App, Matt Sanchez 2022</em>
+      </div>
+    </footer>
   </Provider>
 );
