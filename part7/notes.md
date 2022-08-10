@@ -1516,4 +1516,42 @@ Disable ESLint rules for file (.eslintignore wasn't detecting?)
     ```
 * Sending simple text with ```Content-Type: text/plain```
   * Always look for different options of ones that you always use (application/json)
-* 
+
+
+## **Material UI**
+* ```<Container>``` object wraps around ```<App />```
+  * ```maxWidth``` prop can be changed
+* ```sx``` prop is a way to override MUI styles
+  * ```<Container maxWidth="xl" sx={{padding:"0 !important"}}>...</Container>```
+* Reusable MUI Component
+  * ```js
+    // import * as React from 'react';
+    import Button from '@mui/material/Button';
+    import { styled } from '@mui/material/styles';
+    import { Link } from 'react-router-dom'
+
+
+    const MenuButton = styled(Button)(() => ({
+      fontSize: '1rem',
+      color: '#fff',
+      padding: 5,
+      '& a': {
+        textDecoration: 'underline',
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        padding: 5
+      }
+    }));
+
+    export default function StyledCustomization(props) {
+      return (
+        <MenuButton>
+          <Link to={props.path}>{props.label}</Link>
+        </MenuButton>
+      )
+    }
+    ```
+  * ```js
+    {StyledCustomization({label:'Blogs', path:'/'})}
+    ```
+  * ```& a``` is SASS and the & is interpreted as the parent selector (kind of like 'this')
+  * 
