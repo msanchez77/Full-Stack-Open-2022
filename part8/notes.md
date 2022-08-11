@@ -513,3 +513,178 @@ query {
 
 Can be beneficial to **name the queries/mutations** in cases of them having parameters and the different operations resulting from it
 
+### **Learned during part8a exercises**
+Array methods refresher
+1) **Some**
+  * Use to *check* (returns Boolean) if an element exists within an list of objects
+  * ```authors.some(author => author.name === authorToFind)```
+2) **Filter**
+  * Use to *get all* (returns array) the occurrences that match your operand
+  * ```filteredBooks.filter((book) => book.author === args.author)```
+3) **Find**
+  * Use to *get the first* (returns Object) occurrence of your operand 
+  * ```const author = authors.find(a => a.name === args.name)```
+4) **Reduce**
+  * Use to *build upon* a value (returns result: sum/array/*Object*)
+  * ```javascript
+    const sumReduce = books.reduce(
+      (sum, currentBook) => sum + (currentBook.author === root.name)
+      , 0 // INITIAL VALUE (use [] for array and {} for object)
+    );
+    ```
+5) **Map**
+  * Use to *update* some object in your array
+  * ```javascript
+    authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
+    ```
+  * General use can be to *create* a new array derived from the looping array
+
+
+## **GraphQL and React**
+GraphQL queries CAN be executed through HTTP POST requests to the graphql endpoint (axios)  
+--> ```http://localhost:4000/graphql```
+--> ```{"query": "query { allPersons{ name } }"```
+
+HOWEVER, it is usually recommended to use a **higher-level** library to abstract the communication
+1) **Relay** by Facebook
+2) **Apollo Client** by Apollo (client-side of the Apollo Server used in the last section)
+  * Apollo Client is the one to be focused on as it is the most popular
+
+### **Apollo Client**
+Note: Course notes state that the Apollo Client does **not** work well with React 18 (21th April 2022) so we downgrade ```react``` and ```react-dom``` packages by editing ```package.json``` and running ```npm install```
+
+Install Apollo Client packages
+```javascript
+npm install @apollo/client graphql
+```
+
+A client is instantiated with a **cache** and **link** (imported from '@apollo/client')
+```javascript
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: new HttpLink({
+    uri: 'http://localhost:4000',
+  })
+})
+```
+
+A query is executed through a gql string
+```javascript
+const query = gql`
+query {
+  allPersons {
+    name,
+    phone,
+    address {
+      street,
+      city
+    }
+    id
+  }
+}
+`
+```
+
+The client can be made **accessible to all components** by wrapping ```<App />``` with ```ApolloProvider``` and sending the client object to ```ApolloProvider```
+```javascript
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>,
+  document.getElementById('root')
+)
+```
+
+### **Making Queries**
+```useQuery()``` is the hook function that is the dominant method to make queries 
+```javascript
+import { gql, useQuery } from '@apollo/client'
+
+const ALL_PERSONS = gql`
+query {
+  allPersons {
+    name
+    phone
+    id
+  }
+}
+`
+
+const App = () => {
+  const result = useQuery(ALL_PERSONS)
+
+  if (result.loading) {
+    return <div>loading...</div>
+  }
+
+  return (
+    <div>
+      {result.data.allPersons.map(p => p.name).join(', ')}
+    </div>
+  )
+}
+```
+* useQuery will return a result with [multiple fields](https://www.apollographql.com/docs/react/api/react/hooks/#result)
+* ```loading```: Boolean to check if the query has received a response yet
+* ```data```: Contains the result of the query
+
+### **Named queries and variables**
+GraphQL variables can be set through the ```variables``` object when calling ```useQuery``` 
+```javascript
+const [nameToSearch, setNameToSearch] = useState(null)
+const result = useQuery(FIND_PERSON, {
+  variables: { nameToSearch },
+  skip: !nameToSearch,
+})
+```
+* Query is **conditionally** executed is with the use of the ```skip``` option  
+
+</br>
+
+The Query string (FIND_PERSON)
+```javascript
+const FIND_PERSON = gql`
+  query findPersonByName($nameToSearch: String!) {
+    findPerson(name: $nameToSearch) {
+      name
+      phone
+      id
+      address {
+        street
+        city
+      }
+    }
+  }
+`
+```
+* Notice that the query is **named** now (```findPersonByName```) and is given a **parameter** (```$nameToSearch```)
+
+
+#### **useLazyQuery**
+* Apollo hook that will define a query and execute it when the user performs some sort of action
+* So the component will not *render* with that query executed, and it will be on a button click, submission, etc.
+
+Code function after rework above
+--
+* State ```nameToSearch``` is initialized to ```null```
+* Query ```FIND_PERSON``` is defined with options
+  * ```variables```
+  * ```skip```
+    * Will **not** execute the query when ```nameToSearch=null```
+* On component's **first render** (since ```nameToSearch=null```), a list of person names from props is shown with a button
+  * onClick: Set the state ```nameToSearch``` to its corresponding person --> **RE-RENDER**
+* *Now* an individual ```<Person />``` component is rendered with the Person's details and a button
+  * onClick: Set the state ```nameToSearch``` to null --> **RE-RENDER**
+  * Conditional render for ```<Person />```
+    * ```javascript
+      if (nameToSearch && result.data) {
+        return (
+          <Person
+            person={result.data.findPerson}
+            onClose={() => setNameToSearch(null)}
+          />
+        )
+      }
+      ```
+
+### **Cache**

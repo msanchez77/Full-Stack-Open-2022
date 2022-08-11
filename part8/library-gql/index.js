@@ -124,7 +124,7 @@ const typeDefs = gql`
   }
 `
 
-const isAuthorInDB = (author) => authors.filter(author => author.name === args.author).length === 0
+const isAuthorInDB = (authorToFind) => authors.some(author => author.name === authorToFind)
 
 const resolvers = {
   Query: {
